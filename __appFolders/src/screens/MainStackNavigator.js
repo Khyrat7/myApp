@@ -8,6 +8,7 @@ import LoginScreen from './LoginScreen';
 import HomeScreen from './HomeScreen';
 import DirectScreen from './DirectScreen';
 import UserProfile from './UserProfile';
+import EditProfile from './settings/EditProfile';
 
 const Stack = createStackNavigator();
 
@@ -57,12 +58,12 @@ const MainStackNavigator = () => {
           options={{title: 'User Profile'}}
         />
 
-        {/*
-                <Stack.Screen
-          name=""
-          component={}
-          options={{title: ''}}
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{headerShown: true, title: 'Edit Profile'}}
         />
+        {/*
 
                 <Stack.Screen
           name=""

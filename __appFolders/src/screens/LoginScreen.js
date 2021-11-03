@@ -14,7 +14,6 @@ import {
   Alert,
   SafeAreaView,
   KeyboardAvoidingView,
-  ScrollView,
 } from 'react-native';
 import LoginTextInput from '../components/LoginTextInput';
 import LoginButton from '../components/LoginButton';
@@ -105,16 +104,26 @@ const LoginScreen = props => {
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(user => {
-          firestore().collection('users').doc(user.user.uid).set({
-            userID: user.user.uid,
-            email: user.user.email,
-            createdAt: new Date().toUTCString(),
-            name: '',
-            username: '',
-            phoneNumber: '',
-            gender: '',
-          });
-          user.user.sendEmailVerification();
+          // Creating user profile
+          firestore()
+            .collection('users')
+            .doc(user.user.uid)
+            .set({
+              userID: user.user.uid,
+              email: user.user.email,
+              createdAt: new Date().toUTCString(),
+              name: '',
+              username: '',
+              phoneNumber: '',
+              gender: '',
+            })
+            .then(
+              // Creating a user object and setting the default app settings.
+              firestore().collection('userObjects').doc(user.user.uid).set({
+                appTheme: 'light',
+              }),
+            );
+          user.user.sendEmailVerification(); // Navigation will be handeled in the splash screen's onAuthStateChanged
           // Success creating user
           setLogin(true);
           setConfirmPassword('');
@@ -287,17 +296,10 @@ const LoginScreen = props => {
 
           <Text style={styles.text}>_________ OR _________</Text>
           <View style={styles.icons}>
-            <ImageIcon
-              imageSource={require('../../assets/images/facebook.png')}
-            />
-
-            <ImageIcon
-              imageSource={require('../../assets/images/google.jpeg')}
-            />
-
-            <ImageIcon imageSource={require('../../assets/images/apple.png')} />
-
-            <ImageIcon imageSource={require('../../assets/images/phone.png')} />
+            <ImageIcon imageSource={Images.facebook} />
+            <ImageIcon imageSource={Images.google} />
+            <ImageIcon imageSource={Images.apple} />
+            <ImageIcon imageSource={Images.phone} />
           </View>
           <LoginButton
             title={login ? 'Login' : 'Sign up'}
