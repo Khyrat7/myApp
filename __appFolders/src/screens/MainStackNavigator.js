@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-
 import Colors from '../../constants/Colors';
 import SplashScreen from './SplashScreen';
 import LoginScreen from './LoginScreen';
@@ -9,10 +8,13 @@ import HomeScreen from './HomeScreen';
 import DirectScreen from './DirectScreen';
 import UserProfile from './UserProfile';
 import EditProfile from './settings/EditProfile';
+import {ThemeContext} from '../../context/LayoutContext';
 
 const Stack = createStackNavigator();
 
 const MainStackNavigator = () => {
+  const {themeColors} = useContext(ThemeContext);
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -21,9 +23,9 @@ const MainStackNavigator = () => {
         initialRouteName="SplashScreen"
         screenOptions={{
           headerStyle: {
-            backgroundColor: Colors.orange,
+            backgroundColor: themeColors.header,
           },
-          headerTintColor: '#fff',
+          headerTintColor: Colors.white,
 
           headerTitleStyle: {
             fontWeight: 'bold',
