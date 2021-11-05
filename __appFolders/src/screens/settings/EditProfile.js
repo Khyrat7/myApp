@@ -1,5 +1,5 @@
 // ToDo
-// styling the navigation bar
+// Show error if the phone number is not a valid number
 
 import React, {useLayoutEffect, useState, useEffect, useContext} from 'react';
 import {
@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Colors from '../../../constants/Colors';
@@ -20,27 +21,49 @@ import firestore from '@react-native-firebase/firestore';
 import DismissKeyboard from '../../components/DismissKeyboard';
 import Constants from '../../../constants/PhoneDimentions';
 import ProfileTextField from '../../components/ProfileTextField';
-import {formatDateLong, formatDateShort} from '../../../modules/DateModule';
+import {
+  formatDateLong,
+  formatDateShort,
+  formatNormalDate,
+} from '../../../modules/DateModule';
 import ProfileTextInput from '../../components/ProfileTextInput';
 import storage from '@react-native-firebase/storage';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Images from '../../../constants/Images';
 import {ThemeContext} from '../../../context/LayoutContext';
+import DropDown from '../../components/DropDown';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import LoginValidation from '../../../validation/LoginValidation';
 
 export default UserProfile = props => {
   // Props & Hooks
   const {navigation, route} = props;
-  const {themeColors} = useContext(ThemeContext);
+  const {themeColors, theme} = useContext(ThemeContext);
 
+  const [edited, setEdited] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageChanged, setImageChanged] = useState(false);
   const [user, setUser] = useState({});
   const [name, setName] = useState('');
   const [userName, setUserName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [gender, setGender] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [address, setAddress] = useState('');
   const [image, setImage] = useState(null);
-  const [imageChanged, setImageChanged] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [edited, setEdited] = useState(false);
+
+  // _________ Date Hooks ______________
+
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
+  // _________ Gender Dropdown hooks _________
+  const [genderDDopen, setGenderDDOpen] = useState(false);
+  const [genderDDitems, setGenderDDItems] = useState([
+    {label: 'Male', value: 'Male'},
+    {label: 'Female', value: 'Female'},
+  ]);
 
   useEffect(() => {
     getUserData();
@@ -52,7 +75,7 @@ export default UserProfile = props => {
         <TouchableOpacity
           style={styles.headerButton}
           onPress={() => {
-            // Checking if any changes took place by the user
+            // // Checking if any changes took place by the user
             if (!edited && !imageChanged) {
               navigation.goBack();
             } else {
@@ -67,17 +90,31 @@ export default UserProfile = props => {
                       setIsLoading(true);
                       try {
                         await handleSaveClicked();
+                        if (!isLoading) {
+                          setEdited(false);
+                          setImageChanged(false);
+                          navigation.goBack();
+                          Alert.alert('Saved', 'Changes Saved Successfully.');
+                        } else {
+                          null;
+                        }
                       } catch (error) {
                         console.log(error);
+                        setIsLoading(false);
                       }
-                      Alert.alert('Saved', 'Changes Saved Successfully.');
                     },
                   },
                   {
                     // ignore changes and navigate back
                     text: 'No',
                     onPress: () => {
-                      isLoading ? null : navigation.goBack();
+                      if (!isLoading) {
+                        setEdited(false);
+                        setImageChanged(false);
+                        navigation.goBack();
+                      } else {
+                        null;
+                      }
                     },
                   },
                 ],
@@ -111,29 +148,37 @@ export default UserProfile = props => {
     });
   });
 
-  // fetching
+  // _________ fetching _________
   const userID = auth().currentUser.uid;
   const joinDate = formatDateShort(user.createdAt);
+  const bDate = formatNormalDate(user.birthDate);
 
-  // Firestore functions
+  // _________ Firestore functions _________
   getUserData = async () => {
     setIsLoading(true);
-    await firestore()
-      .collection('users')
-      .doc(userID)
-      .get()
-      .then(user => {
-        setUser(user.data());
-        setImage(user.data().imageURL);
-        setName(user.data().name);
-        setUserName(user.data().username);
-        setPhoneNumber(user.data().phoneNumber);
-        setGender(user.data().gender);
-        setIsLoading(false);
-      });
+    try {
+      await firestore()
+        .collection('users')
+        .doc(userID)
+        .get()
+        .then(user => {
+          setUser(user.data());
+          setImage(user.data().imageURL);
+          setName(user.data().name);
+          setUserName(user.data().username);
+          setPhoneNumber(user.data().phoneNumber);
+          setGender(user.data().gender);
+          setBirthDate(user.data().birthDate);
+          setAddress(user.data().address);
+          setIsLoading(false);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    setEdited(false); // Because when the value changes in the gender dropdown it sets the editing to true
   };
 
-  // Upload Photo Functions
+  // _________ Upload Photo Functions _________
 
   takePhotoFromCamera = () => {
     launchCamera(
@@ -176,7 +221,7 @@ export default UserProfile = props => {
     setIsLoading(true);
     const uploadUri = image;
     let fileName = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
-
+    fileName = userID + '/' + fileName;
     console.log('fiel name : ', fileName);
     try {
       await storage().ref(fileName).putFile(uploadUri);
@@ -233,6 +278,8 @@ export default UserProfile = props => {
           username: userName,
           phoneNumber: phoneNumber,
           gender: gender,
+          birthDate: birthDate,
+          address: address,
         });
         setIsLoading(false);
         setEdited(false);
@@ -243,10 +290,46 @@ export default UserProfile = props => {
     }
   };
 
-  // Styles
+  // _________ Date Picker Functions _________
+
+  const showMode = currentMode => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    if (show) {
+      setShow(false);
+    } else {
+      setShow(true);
+      showMode('date');
+    }
+  };
+
+  changeBirthDate = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    setBirthDate(new Date(currentDate).toUTCString());
+    setEdited(true);
+  };
+
+  // _________ Text Validation _________
+
+  validatePhoneNumber = () => {
+    console.log('entered validation');
+    isValid = LoginValidation.isValidNumber(phoneNumber);
+    if (!isValid) {
+      console.log('nooooo number');
+    } else {
+      console.log('is number');
+    }
+  };
+
+  // _________ Styles _________
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      // flex: 1,
       justifyContent: 'space-between',
       alignContent: 'center',
       alignItems: 'stretch',
@@ -291,62 +374,189 @@ export default UserProfile = props => {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
         <SafeAreaView>
           <View style={styles.container}>
-            {isLoading ? (
-              <ActivityIndicator
-                style={{marginTop: 10, marginBottom: 10}}
-                size="large"
-              />
-            ) : null}
+            <ScrollView>
+              {isLoading ? (
+                <ActivityIndicator
+                  style={{
+                    marginTop: 30,
+                    marginBottom: 30,
+                  }}
+                  size="large"
+                />
+              ) : null}
 
-            <TouchableOpacity
-              style={styles.photoFram}
-              onPress={() => {
-                changePhoto();
-              }}>
-              <Image
-                style={styles.userPhoto}
-                source={image ? {uri: image} : Images.defaultUserPhoto}
+              <TouchableOpacity
+                style={styles.photoFram}
+                onPress={() => {
+                  changePhoto();
+                }}>
+                <Image
+                  style={styles.userPhoto}
+                  source={image ? {uri: image} : Images.defaultUserPhoto}
+                />
+              </TouchableOpacity>
+              <ProfileTextField title="Email:" value={user.email} />
+              <ProfileTextInput
+                title="Name:"
+                value={name}
+                placeholder="Name"
+                onChangeText={text => {
+                  setEdited(true);
+                  setName(text);
+                }}
               />
-            </TouchableOpacity>
-            <ProfileTextField title="Email:" value={user.email} />
-            <ProfileTextInput
-              title="Name:"
-              value={name}
-              placeholder="Name"
-              onChangeText={text => {
-                setEdited(true);
-                setName(text);
-              }}
-            />
-            <ProfileTextInput
-              title="Username:"
-              value={userName}
-              placeholder="Username"
-              onChangeText={text => {
-                setEdited(true);
-                setUserName(text);
-              }}
-            />
-            <ProfileTextInput
-              title="Phone Number:"
-              value={phoneNumber}
-              placeholder="Phone Number"
-              onChangeText={text => {
-                setEdited(true);
-                setPhoneNumber(text);
-              }}
-            />
-            <ProfileTextInput
-              //*******************  Use dropdown picker  */
-              title="Gender:"
-              value={gender}
-              placeholder="Gender"
-              onChangeText={text => {
-                setEdited(true);
-                setGender(text);
-              }}
-            />
-            <ProfileTextField title="Join Date:" value={joinDate} />
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+              <ProfileTextField
+                title="Birth Date:"
+                value={formatNormalDate(birthDate)}
+              />
+              <TouchableOpacity
+                style={{
+                  height: 20,
+                  backgroundColor: themeColors.background,
+                  borderRadius: 10,
+                  width: Constants.screenWidth * 0.3,
+                  alignSelf: 'center',
+                  marginVertical: 5,
+                }}
+                onPress={showDatepicker}>
+                <Text
+                  style={{color: themeColors.titleFont, textAlign: 'center'}}>
+                  {' '}
+                  Change Date
+                </Text>
+              </TouchableOpacity>
+
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="spinner"
+                  onChange={changeBirthDate}
+                  color={Colors.Darkgray}
+                  backgroundColor={Colors.Darkgray}
+                  themeVariant={Platform.OS === 'ios' ? theme : null}
+                />
+              )}
+              <DropDown
+                title="Gender"
+                open={genderDDopen}
+                value={gender}
+                items={genderDDitems}
+                setItems={setGenderDDItems}
+                setOpen={setGenderDDOpen}
+                setValue={setGender}
+                placeholder={gender}
+                onChangeValue={() => {
+                  setEdited(true);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Phone Number:"
+                value={phoneNumber}
+                placeholder="Phone Number"
+                onChangeText={text => {
+                  setPhoneNumber(text);
+                  validatePhoneNumber();
+                }}
+                onEndEditing={() => {
+                  validatePhoneNumber();
+                }}
+                keyboardType="numeric"
+              />
+
+              <ProfileTextInput
+                title="Address:"
+                value={address}
+                placeholder="Address"
+                onChangeText={text => {
+                  setAddress(text);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+
+              <ProfileTextInput
+                title="Username:"
+                value={userName}
+                placeholder="Username"
+                onChangeText={text => {
+                  setEdited(true);
+                  setUserName(text);
+                }}
+              />
+
+              <ProfileTextField title="Join Date:" value={joinDate} />
+            </ScrollView>
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>

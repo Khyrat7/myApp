@@ -6,7 +6,8 @@ import Constants from '../../constants/PhoneDimentions';
 import {ThemeContext} from '../../context/LayoutContext';
 
 export default ProfileTextInput = props => {
-  const {title, placeholder, value, onChangeText} = props;
+  const {title, placeholder, value, onChangeText, onEndEditing, keyboardType} =
+    props;
   const {themeColors} = useContext(ThemeContext);
 
   // Styles
@@ -57,6 +58,8 @@ export default ProfileTextInput = props => {
           value={value}
           placeholder={placeholder}
           onChangeText={onChangeText}
+          onEndEditing={onEndEditing}
+          keyboardType={keyboardType}
         />
       </View>
     </View>

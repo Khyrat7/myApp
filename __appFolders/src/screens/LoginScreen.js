@@ -118,8 +118,11 @@ export default LoginScreen = props => {
               createdAt: new Date().toUTCString(),
               name: '',
               username: '',
+              dateOfBirth: '',
               phoneNumber: '',
               gender: '',
+              address: '',
+              location: '',
             })
             .then(
               // Creating a user object and setting the default app settings.

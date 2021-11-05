@@ -1,11 +1,5 @@
-import React, {useLayoutEffect, useEffect, useContext} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useLayoutEffect, useEffect, useState, useContext} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Colors from '../../constants/Colors';
 import {ThemeContext} from '../../context/LayoutContext';
@@ -86,7 +80,14 @@ const HomeScreen = props => {
         onPress={async () => {
           await onClick();
         }}>
-        <Text style={{color: Colors.white, fontSize: 100}}>hi</Text>
+        <Text
+          style={{
+            color: themeColors.titleFont,
+            fontSize: 40,
+            textAlign: 'center',
+          }}>
+          Change Theme
+        </Text>
       </TouchableOpacity>
     </View>
   );

@@ -53,3 +53,12 @@ export function formatDateShort(d) {
   // console.log('Date From Module : ', formatted);
   return formatted;
 }
+
+export function formatNormalDate(d) {
+  const date = new Date(d).getDate();
+  const year = new Date(d).getFullYear();
+  const monthIndex = new Date(d).getMonth();
+  const monthName = mon[monthIndex];
+  const formatted = `${date} / ${monthName} / ${year}`;
+  return formatted;
+}

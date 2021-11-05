@@ -12,4 +12,12 @@ export default class LoginValidation {
     let isValid = expression.test(String(term).toLowerCase());
     return isValid;
   };
+
+  static isValidNumber = term => {
+    if (!/\D/.test(term)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 }
