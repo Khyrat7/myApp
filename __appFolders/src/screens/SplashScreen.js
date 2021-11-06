@@ -16,7 +16,7 @@ const SplashScreen = props => {
   }, [navigation]);
 
   // Checking if the user is still logged in or not and navigate to the corresponding screen
-  // LoginScreen if signed out - HomeScreen if singned in
+  // LoginScreen if signed out - HomeScreen if singned in  (in any screen of the app)
   checkAuth = () => {
     try {
       auth().onAuthStateChanged(user => {
@@ -78,14 +78,9 @@ const styles = StyleSheet.create({
   image: {
     width: Constants.screenWidth * 0.4,
     height: Constants.screenWidth * 0.4,
-    // justifyContent: 'center',
-    // alignContent: 'center',
   },
   animation: {
     flex: 1,
-    // width: '100%',
-    // height: Constants.screenHeight * 0.5,
-    // alignContent: 'center',
   },
 });
 
