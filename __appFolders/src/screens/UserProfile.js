@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Colors from '../../constants/Colors';
@@ -16,9 +17,14 @@ import firestore from '@react-native-firebase/firestore';
 import DismissKeyboard from '../components/DismissKeyboard';
 import Constants from '../../constants/PhoneDimentions';
 import ProfileTextField from '../components/ProfileTextField';
-import {formatDateLong, formatDateShort} from '../../modules/DateModule';
+import {
+  formatDateLong,
+  formatDateShort,
+  formatNormalDate,
+} from '../../modules/DateModule';
 import Images from '../../constants/Images';
 import {ThemeContext} from '../../context/LayoutContext';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 export default UserProfile = props => {
   // Props
@@ -92,7 +98,7 @@ export default UserProfile = props => {
     headerText: {
       width: '100%',
       height: 50,
-      fontSize: 16,
+      fontSize: RFPercentage(2),
       color: themeColors.headerFont,
       textAlign: 'center',
     },
@@ -100,6 +106,7 @@ export default UserProfile = props => {
       alignContent: 'center',
       marginHorizontal: 15,
       marginTop: 30,
+      fontSize: RFPercentage(2),
     },
     userPhoto: {
       width: Constants.screenWidth * 0.25,
@@ -118,33 +125,49 @@ export default UserProfile = props => {
   });
 
   return (
-    <DismissKeyboard>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior="position"
-        enabled
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
-        <SafeAreaView>
-          <View style={styles.container}>
-            {isLoading ? (
-              <ActivityIndicator
-                style={{marginTop: 10, marginBottom: 10}}
-                size="large"
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: themeColors.background,
+        alignContent: 'center',
+      }}
+      contentInsetAdjustmentBehavior="automatic">
+      <DismissKeyboard>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior="position"
+          enabled
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
+          <SafeAreaView>
+            <View style={styles.container}>
+              {isLoading ? (
+                <ActivityIndicator
+                  style={{marginTop: 10, marginBottom: 10}}
+                  size="large"
+                />
+              ) : null}
+              <Image
+                style={styles.userPhoto}
+                source={image ? {uri: image} : Images.defaultUserPhoto}
               />
-            ) : null}
-            <Image
-              style={styles.userPhoto}
-              source={image ? {uri: image} : Images.defaultUserPhoto}
-            />
-            <ProfileTextField title="Email:" value={user.email} />
-            <ProfileTextField title="Name:" value={user.name} />
-            <ProfileTextField title="Username:" value={user.username} />
-            <ProfileTextField title="Phone Number:" value={user.phoneNumber} />
-            <ProfileTextField title="Gender:" value={user.gender} />
-            <ProfileTextField title="Join Date:" value={joinDate} />
-          </View>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
-    </DismissKeyboard>
+              <ProfileTextField title="Email:" value={user.email} />
+              <ProfileTextField title="Name:" value={user.name} />
+              <ProfileTextField title="Username:" value={user.username} />
+              <ProfileTextField
+                title="Birth Date:"
+                value={formatNormalDate(user.birthDate)}
+              />
+              <ProfileTextField title="Gender:" value={user.gender} />
+              <ProfileTextField
+                title="Phone Number:"
+                value={user.phoneNumber}
+              />
+              <ProfileTextField title="Address:" value={user.address} />
+              <ProfileTextField title="Join Date:" value={joinDate} />
+            </View>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </DismissKeyboard>
+    </ScrollView>
   );
 };

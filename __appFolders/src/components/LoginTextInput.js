@@ -4,6 +4,7 @@ import PhoneDimentions from '../../constants/PhoneDimentions';
 import Colors from '../../constants/Colors';
 import Constants from '../../constants/PhoneDimentions';
 import {ThemeContext} from '../../context/LayoutContext';
+import {RFValue, RFPercentage} from 'react-native-responsive-fontsize';
 
 export default LoginTextInput = props => {
   const {
@@ -44,6 +45,7 @@ export default LoginTextInput = props => {
       paddingHorizontal: '5%',
       backgroundColor: themeColors.fieldColor,
       color: themeColors.mainFont,
+      fontSize: RFPercentage(2),
     },
     text: {
       color: themeColors.titleFont,
@@ -51,7 +53,7 @@ export default LoginTextInput = props => {
       height: '50%',
       width: '80%',
       marginHorizontal: '10%',
-      fontSize: 20,
+      fontSize: RFPercentage(2),
       textAlign: 'left',
       backgroundColor: themeColors.background,
     },

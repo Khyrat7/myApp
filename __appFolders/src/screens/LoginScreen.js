@@ -26,6 +26,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {ThemeContext} from '../../context/LayoutContext';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 export default LoginScreen = props => {
   // Props & Hooks
@@ -253,7 +254,7 @@ export default LoginScreen = props => {
       alignContent: 'center',
       alignSelf: 'center',
       color: Colors.white,
-      fontSize: 16,
+      fontSize: RFPercentage(2),
       marginRight: '15%',
     },
     image: {
@@ -268,7 +269,7 @@ export default LoginScreen = props => {
       height: '5%',
       width: '80%',
       marginHorizontal: '10%',
-      fontSize: 14,
+      fontSize: RFPercentage(2),
       textAlign: 'center',
       fontWeight: 'bold',
     },
@@ -276,7 +277,7 @@ export default LoginScreen = props => {
       color: Colors.red,
       height: '5%',
       width: '100%',
-      fontSize: 15,
+      fontSize: RFPercentage(2),
       textAlign: 'center',
       fontWeight: 'bold',
     },
@@ -380,7 +381,12 @@ export default LoginScreen = props => {
           <TouchableOpacity
             style={{width: Constants.screenWidth * 0.3, alignSelf: 'center'}}
             onPress={forgetPasswordPressed}>
-            <Text style={{textAlign: 'center', color: themeColors.titleFont}}>
+            <Text
+              style={{
+                textAlign: 'center',
+                color: themeColors.titleFont,
+                fontSize: RFPercentage(2),
+              }}>
               Forget Password
             </Text>
           </TouchableOpacity>

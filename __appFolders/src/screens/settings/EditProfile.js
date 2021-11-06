@@ -11,6 +11,7 @@ import {
   Alert,
   SafeAreaView,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
   ActivityIndicator,
   ScrollView,
@@ -34,6 +35,7 @@ import {ThemeContext} from '../../../context/LayoutContext';
 import DropDown from '../../components/DropDown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import LoginValidation from '../../../validation/LoginValidation';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 export default UserProfile = props => {
   // Props & Hooks
@@ -329,16 +331,16 @@ export default UserProfile = props => {
   // _________ Styles _________
   const styles = StyleSheet.create({
     container: {
-      // flex: 1,
       justifyContent: 'space-between',
       alignContent: 'center',
       alignItems: 'stretch',
       backgroundColor: themeColors.background,
+      paddingBottom: 150,
     },
     headerText: {
       width: '100%',
       height: 50,
-      fontSize: 16,
+      fontSize: RFPercentage(2),
       color: themeColors.headerFont,
       textAlign: 'center',
     },
@@ -346,6 +348,7 @@ export default UserProfile = props => {
       alignContent: 'center',
       marginHorizontal: 15,
       marginTop: 30,
+      fontSize: RFPercentage(2),
     },
     userPhoto: {
       width: Constants.screenWidth * 0.25,
@@ -366,15 +369,17 @@ export default UserProfile = props => {
   });
 
   return (
-    <DismissKeyboard>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior="position"
-        enabled
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
-        <SafeAreaView>
-          <View style={styles.container}>
-            <ScrollView>
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: themeColors.background,
+        alignContent: 'center',
+      }}
+      contentInsetAdjustmentBehavior="automatic">
+      <DismissKeyboard>
+        <KeyboardAvoidingView style={styles.container} enabled>
+          <SafeAreaView>
+            <View style={styles.container}>
               {isLoading ? (
                 <ActivityIndicator
                   style={{
@@ -420,7 +425,7 @@ export default UserProfile = props => {
               />
               <TouchableOpacity
                 style={{
-                  height: 20,
+                  height: RFPercentage(3),
                   backgroundColor: themeColors.background,
                   borderRadius: 10,
                   width: Constants.screenWidth * 0.3,
@@ -429,7 +434,11 @@ export default UserProfile = props => {
                 }}
                 onPress={showDatepicker}>
                 <Text
-                  style={{color: themeColors.titleFont, textAlign: 'center'}}>
+                  style={{
+                    color: themeColors.titleFont,
+                    textAlign: 'center',
+                    fontSize: RFPercentage(2),
+                  }}>
                   {' '}
                   Change Date
                 </Text>
@@ -482,84 +491,15 @@ export default UserProfile = props => {
                 placeholder="Address"
                 onChangeText={text => {
                   setAddress(text);
-                }}
-              />
-
-              <ProfileTextInput
-                title="Username:"
-                value={userName}
-                placeholder="Username"
-                onChangeText={text => {
                   setEdited(true);
-                  setUserName(text);
-                }}
-              />
-
-              <ProfileTextInput
-                title="Username:"
-                value={userName}
-                placeholder="Username"
-                onChangeText={text => {
-                  setEdited(true);
-                  setUserName(text);
-                }}
-              />
-
-              <ProfileTextInput
-                title="Username:"
-                value={userName}
-                placeholder="Username"
-                onChangeText={text => {
-                  setEdited(true);
-                  setUserName(text);
-                }}
-              />
-
-              <ProfileTextInput
-                title="Username:"
-                value={userName}
-                placeholder="Username"
-                onChangeText={text => {
-                  setEdited(true);
-                  setUserName(text);
-                }}
-              />
-
-              <ProfileTextInput
-                title="Username:"
-                value={userName}
-                placeholder="Username"
-                onChangeText={text => {
-                  setEdited(true);
-                  setUserName(text);
-                }}
-              />
-
-              <ProfileTextInput
-                title="Username:"
-                value={userName}
-                placeholder="Username"
-                onChangeText={text => {
-                  setEdited(true);
-                  setUserName(text);
-                }}
-              />
-
-              <ProfileTextInput
-                title="Username:"
-                value={userName}
-                placeholder="Username"
-                onChangeText={text => {
-                  setEdited(true);
-                  setUserName(text);
                 }}
               />
 
               <ProfileTextField title="Join Date:" value={joinDate} />
-            </ScrollView>
-          </View>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
-    </DismissKeyboard>
+            </View>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </DismissKeyboard>
+    </ScrollView>
   );
 };

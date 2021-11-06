@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 import Colors from '../../constants/Colors';
 import {ThemeContext} from '../../context/LayoutContext';
 import firestore from '@react-native-firebase/firestore';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 const HomeScreen = props => {
   // Props and Hooks
@@ -20,6 +21,7 @@ const HomeScreen = props => {
           style={styles.headerButton}
           onPress={() => {
             auth().signOut();
+            // navigation.navigate('DrawerOpen');
           }}>
           <Text style={styles.headerText}>Sign Out</Text>
         </TouchableOpacity>
@@ -28,7 +30,7 @@ const HomeScreen = props => {
         <TouchableOpacity
           style={styles.headerButton}
           onPress={() => {
-            navigation.navigate('UserProfile');
+            navigation.navigate('Settings');
           }}>
           <Text style={styles.headerText}>Profile</Text>
         </TouchableOpacity>
@@ -37,19 +39,7 @@ const HomeScreen = props => {
   });
 
   onClick = () => {
-    try {
-      console.log(theme);
-      theme === 'dark' ? setTheme('light') : setTheme('dark');
-
-      firestore()
-        .collection('userObjects')
-        .doc(userID)
-        .update({
-          appTheme: theme === 'dark' ? 'light' : 'dark',
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    navigation.navigate('UserProfile');
   };
 
   // Styles
@@ -63,7 +53,7 @@ const HomeScreen = props => {
     headerText: {
       width: '100%',
       height: 50,
-      fontSize: 16,
+      fontSize: RFPercentage(2),
       color: themeColors.headerFont,
       textAlign: 'center',
     },
@@ -71,6 +61,7 @@ const HomeScreen = props => {
       alignContent: 'center',
       marginHorizontal: 15,
       marginTop: 30,
+      fontSize: RFPercentage(2),
     },
   });
 
@@ -86,7 +77,7 @@ const HomeScreen = props => {
             fontSize: 40,
             textAlign: 'center',
           }}>
-          Change Theme
+          User Profile
         </Text>
       </TouchableOpacity>
     </View>

@@ -9,6 +9,8 @@ import DirectScreen from './DirectScreen';
 import UserProfile from './UserProfile';
 import EditProfile from './settings/EditProfile';
 import {ThemeContext} from '../../context/LayoutContext';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import Settings from './settings/Settings';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +31,7 @@ const MainStackNavigator = () => {
 
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: RFPercentage(3),
           },
         }}>
         <Stack.Screen
@@ -65,13 +68,13 @@ const MainStackNavigator = () => {
           component={EditProfile}
           options={{headerShown: true, title: 'Edit Profile'}}
         />
-        {/*
 
-                <Stack.Screen
-          name=""
-          component={}
-          options={{title: ''}}
+        <Stack.Screen
+          name="Settings"
+          component={Settings}
+          options={{title: 'Settings'}}
         />
+        {/*
 
                 <Stack.Screen
           name=""
@@ -80,9 +83,19 @@ const MainStackNavigator = () => {
         />
         
 
+             <Stack.Screen
+          name=""
+          component={}
+          options={{title: ''}}
+        />
+        
 
-
-
+             <Stack.Screen
+          name=""
+          component={}
+          options={{title: ''}}
+        />
+        
 
 
 
