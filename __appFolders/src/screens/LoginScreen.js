@@ -4,7 +4,7 @@
 // - Facebook Auth.
 // - Apple Auth.
 
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState, useLayoutEffect, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -25,11 +25,13 @@ import LoginValidation from '../../validation/LoginValidation';
 import DismissKeyboard from '../components/DismissKeyboard';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {ThemeContext} from '../../context/LayoutContext';
 
-const LoginScreen = props => {
+export default LoginScreen = props => {
+  // Props & Hooks
   const {navigation, route} = props;
+  const {themeColors} = useContext(ThemeContext);
 
-  // Hooks
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -42,14 +44,16 @@ const LoginScreen = props => {
   // setting the navigation styling and content
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: {
-        backgroundColor: Colors.blue,
-      },
       title: login ? 'Login' : 'Sign up',
       headerRight: () => (
         <TouchableOpacity
           onPress={() => {
-            setLogin(!login);
+            if (login) {
+              setLogin(!login);
+            } else {
+              setLogin(!login);
+              setPasswordMatchError('');
+            }
           }}>
           <Text style={styles.headerButton}>{login ? 'Sign up' : 'Login'}</Text>
         </TouchableOpacity>
@@ -114,8 +118,11 @@ const LoginScreen = props => {
               createdAt: new Date().toUTCString(),
               name: '',
               username: '',
+              dateOfBirth: '',
               phoneNumber: '',
               gender: '',
+              address: '',
+              location: '',
             })
             .then(
               // Creating a user object and setting the default app settings.
@@ -231,6 +238,59 @@ const LoginScreen = props => {
     }
   };
 
+  // Styles
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignItems: 'stretch',
+      backgroundColor: themeColors.background,
+    },
+    headerButton: {
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignSelf: 'center',
+      color: Colors.white,
+      fontSize: 16,
+      marginRight: '15%',
+    },
+    image: {
+      width: Constants.screenWidth * 0.4,
+      height: Constants.screenWidth * 0.4,
+      alignSelf: 'center',
+      // top: 5,
+      marginBottom: Constants.screenHeight * 0.02,
+    },
+    text: {
+      color: themeColors.titleFont,
+      height: '5%',
+      width: '80%',
+      marginHorizontal: '10%',
+      fontSize: 14,
+      textAlign: 'center',
+      fontWeight: 'bold',
+    },
+    error: {
+      color: Colors.red,
+      height: '5%',
+      width: '100%',
+      fontSize: 15,
+      textAlign: 'center',
+      fontWeight: 'bold',
+    },
+    icons: {
+      flexDirection: 'row',
+      alignContent: 'center',
+      alignItems: 'stretch',
+      alignSelf: 'center',
+      marginBottom: Constants.screenHeight * 0.03,
+      marginTop: Constants.screenHeight * 0.01,
+      marginHorizontal: '10%',
+    },
+  });
+
   return (
     <DismissKeyboard>
       <KeyboardAvoidingView
@@ -263,6 +323,9 @@ const LoginScreen = props => {
             onEndEditing={() => {
               emailVaildation();
             }}
+            onFocus={() => {
+              setEmailError('');
+            }}
           />
 
           <LoginTextInput
@@ -277,8 +340,11 @@ const LoginScreen = props => {
             onEndEditing={() => {
               passwordValidation();
             }}
+            onFocus={() => {
+              setPasswordError('');
+            }}
           />
-
+          {/* {setPasswordMatchError('')} */}
           {!login ? (
             <LoginTextInput
               title="Confirm Password"
@@ -290,6 +356,9 @@ const LoginScreen = props => {
               secureTextEntry={true}
               onEndEditing={() => {
                 matchPasswordValidation();
+              }}
+              onFocus={() => {
+                setPasswordMatchError('');
               }}
             />
           ) : null}
@@ -311,7 +380,7 @@ const LoginScreen = props => {
           <TouchableOpacity
             style={{width: Constants.screenWidth * 0.3, alignSelf: 'center'}}
             onPress={forgetPasswordPressed}>
-            <Text style={{textAlign: 'center', color: Colors.blue}}>
+            <Text style={{textAlign: 'center', color: themeColors.titleFont}}>
               Forget Password
             </Text>
           </TouchableOpacity>
@@ -323,56 +392,3 @@ const LoginScreen = props => {
     </DismissKeyboard>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'stretch',
-    // backgroundColor: Colors.black,
-  },
-  headerButton: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-    color: Colors.white,
-    fontSize: 16,
-    marginRight: '15%',
-  },
-  image: {
-    width: Constants.screenWidth * 0.4,
-    height: Constants.screenWidth * 0.4,
-    alignSelf: 'center',
-    // top: 5,
-    marginBottom: Constants.screenHeight * 0.02,
-  },
-  text: {
-    color: Colors.blue,
-    height: '5%',
-    width: '80%',
-    marginHorizontal: '10%',
-    fontSize: 14,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  error: {
-    color: Colors.red,
-    height: '5%',
-    width: '100%',
-    fontSize: 15,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  icons: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    alignItems: 'stretch',
-    alignSelf: 'center',
-    marginBottom: Constants.screenHeight * 0.03,
-    marginTop: Constants.screenHeight * 0.01,
-    marginHorizontal: '10%',
-  },
-});
-
-export default LoginScreen;

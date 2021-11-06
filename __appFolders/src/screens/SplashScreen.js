@@ -1,20 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {Image, View, StyleSheet} from 'react-native';
 import Images from '../../../__appFolders/constants/Images';
 import auth from '@react-native-firebase/auth';
 import LottieView from 'lottie-react-native';
-import Colors from '../../constants/Colors';
 import Constants from '../../constants/PhoneDimentions';
+import {ThemeContext} from '../../context/LayoutContext';
 
-const SplashScreen = props => {
+export default SplashScreen = props => {
+  // Props & Hooks
   const {navigation} = props;
+  const {themeColors} = useContext(ThemeContext);
+
   useEffect(() => {
     setTimeout(() => {
       checkAuth();
-      // navigation.navigate('LoginScreen');
     }, 2000);
   }, [navigation]);
 
+  // Functions
   // Checking if the user is still logged in or not and navigate to the corresponding screen
   // LoginScreen if signed out - HomeScreen if singned in  (in any screen of the app)
   checkAuth = () => {
@@ -46,6 +49,26 @@ const SplashScreen = props => {
       );
     }
   };
+  // Styles
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignItems: 'center',
+      backgroundColor: themeColors.background,
+      paddingVertical: Constants.screenHeight * 0.2,
+    },
+
+    image: {
+      width: Constants.screenWidth * 0.4,
+      height: Constants.screenWidth * 0.4,
+    },
+    animation: {
+      flex: 1,
+    },
+  });
 
   return (
     <>
@@ -63,25 +86,3 @@ const SplashScreen = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.black,
-    paddingVertical: Constants.screenHeight * 0.2,
-  },
-
-  image: {
-    width: Constants.screenWidth * 0.4,
-    height: Constants.screenWidth * 0.4,
-  },
-  animation: {
-    flex: 1,
-  },
-});
-
-export default SplashScreen;

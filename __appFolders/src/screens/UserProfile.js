@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState, useEffect} from 'react';
+import React, {useLayoutEffect, useState, useEffect, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -18,10 +18,12 @@ import Constants from '../../constants/PhoneDimentions';
 import ProfileTextField from '../components/ProfileTextField';
 import {formatDateLong, formatDateShort} from '../../modules/DateModule';
 import Images from '../../constants/Images';
+import {ThemeContext} from '../../context/LayoutContext';
 
-const UserProfile = props => {
+export default UserProfile = props => {
   // Props
   const {navigation, route} = props;
+  const {themeColors} = useContext(ThemeContext);
 
   // Hooks
   const [user, setUser] = useState({});
@@ -34,9 +36,9 @@ const UserProfile = props => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'User Profile',
       headerLeft: () => (
         <TouchableOpacity
+          style={styles.headerButton}
           onPress={() => {
             navigation.navigate('HomeScreen');
           }}>
@@ -45,6 +47,7 @@ const UserProfile = props => {
       ),
       headerRight: () => (
         <TouchableOpacity
+          style={styles.headerButton}
           onPress={() => {
             /// navigating to edit profile temroary for testing
             navigation.navigate('EditProfile');
@@ -62,16 +65,57 @@ const UserProfile = props => {
   // Firestore functions
   getUserData = async () => {
     setIsLoading(true);
-    await firestore()
-      .collection('users')
-      .doc(userID)
-      .get()
-      .then(user => {
-        setUser(user.data());
-        setImage(user.data().imageURL);
-        setIsLoading(false);
-      });
+    try {
+      await firestore()
+        .collection('users')
+        .doc(userID)
+        .get()
+        .then(user => {
+          setUser(user.data());
+          setImage(user.data().imageURL);
+          setIsLoading(false);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  // Styles
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'space-between',
+      alignContent: 'center',
+      alignItems: 'stretch',
+      backgroundColor: themeColors.background,
+    },
+    headerText: {
+      width: '100%',
+      height: 50,
+      fontSize: 16,
+      color: themeColors.headerFont,
+      textAlign: 'center',
+    },
+    headerButton: {
+      alignContent: 'center',
+      marginHorizontal: 15,
+      marginTop: 30,
+    },
+    userPhoto: {
+      width: Constants.screenWidth * 0.25,
+      height: Constants.screenWidth * 0.25,
+      borderRadius: Constants.screenWidth * 0.25,
+      borderWidth: 2,
+      borderColor: themeColors.border,
+      alignSelf: 'center',
+      marginTop: Constants.screenHeight * 0.01,
+    },
+    photoFram: {
+      width: Constants.screenWidth * 0.25,
+      height: Constants.screenWidth * 0.25,
+      alignSelf: 'center',
+    },
+  });
 
   return (
     <DismissKeyboard>
@@ -104,38 +148,3 @@ const UserProfile = props => {
     </DismissKeyboard>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'space-between',
-    alignContent: 'center',
-    alignItems: 'stretch',
-  },
-  headerText: {
-    width: 50,
-    height: 50,
-    fontSize: 30,
-    color: Colors.white,
-    textAlign: 'center',
-    alignContent: 'center',
-    alignItems: 'baseline',
-    marginLeft: '3%',
-    marginRight: '3%',
-  },
-  userPhoto: {
-    width: Constants.screenWidth * 0.25,
-    height: Constants.screenWidth * 0.25,
-    borderRadius: Constants.screenWidth * 0.25,
-    borderWidth: 2,
-    borderColor: Colors.blue,
-    alignSelf: 'center',
-    marginTop: Constants.screenHeight * 0.01,
-  },
-  photoFram: {
-    width: Constants.screenWidth * 0.25,
-    height: Constants.screenWidth * 0.25,
-    alignSelf: 'center',
-  },
-});
-
-export default UserProfile;

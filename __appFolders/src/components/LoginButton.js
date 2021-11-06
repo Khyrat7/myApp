@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,9 +8,45 @@ import {
 } from 'react-native';
 import PhoneDimentions from '../../constants/PhoneDimentions';
 import Colors from '../../constants/Colors';
+import {ThemeContext} from '../../context/LayoutContext';
 
-const LoginButton = props => {
+export default LoginButton = props => {
   const {isLoading, onPress, title} = props;
+  const {themeColors} = useContext(ThemeContext);
+
+  // Styles
+  const styles = StyleSheet.create({
+    topContainer: {
+      height: PhoneDimentions.screenHeight * 0.05,
+      marginBottom: 10,
+    },
+    container: {
+      flex: 1,
+      width: '100%',
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignSelf: 'center',
+    },
+    button: {
+      textAlign: 'center',
+      justifyContent: 'center',
+      color: Colors.white,
+      alignContent: 'center',
+      alignSelf: 'center',
+      flex: 1,
+      width: '50%',
+      backgroundColor: themeColors.buttonColor,
+      borderRadius: PhoneDimentions.screenHeight * 0.05,
+    },
+    title: {
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignSelf: 'center',
+      color: Colors.white,
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
+  });
 
   return (
     <View style={styles.topContainer}>
@@ -30,38 +66,3 @@ const LoginButton = props => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  topContainer: {
-    height: PhoneDimentions.screenHeight * 0.05,
-    marginBottom: 10,
-  },
-  container: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-  },
-  button: {
-    textAlign: 'center',
-    justifyContent: 'center',
-    color: Colors.white,
-    alignContent: 'center',
-    alignSelf: 'center',
-    flex: 1,
-    width: '50%',
-    backgroundColor: Colors.blue,
-    borderRadius: PhoneDimentions.screenHeight * 0.05,
-  },
-  title: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-    color: Colors.white,
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
-
-export default LoginButton;
