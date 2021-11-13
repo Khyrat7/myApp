@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,8 @@ import {
   TextInput,
   Switch,
 } from 'react-native';
-import {ThemeContext} from '../../../context/LayoutContext';
-import Constants from '../../../constants/PhoneDimentions';
+import {ThemeContext} from '../../context/LayoutContext';
+import Constants from '../../constants/PhoneDimentions';
 import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import firestore from '@react-native-firebase/firestore';
 
@@ -22,6 +22,8 @@ export default function Settings(props) {
   const [lanSwitch, setLangSwitch] = useState(true);
   const [currentTheme, setCurrentTheme] = useState(theme);
   const [themeSwitch, setThemeSwitch] = useState(true);
+
+  useEffect(() => {}, []);
 
   // ____ Switchs _____
   toggleLangSwitch = () => {
@@ -141,21 +143,22 @@ export default function Settings(props) {
       </View>
       <View style={Styles.separator}></View>
 
-      <TouchableOpacity style={Styles.button}>
+      <TouchableOpacity
+        style={Styles.button}
+        onPress={() => {
+          navigation.navigate('Terms');
+        }}>
         <Text style={Styles.textContainer}>Terms {'&'} Conditions</Text>
         <Text style={Styles.arrow}>{'>'}</Text>
       </TouchableOpacity>
 
       <View style={Styles.separator}></View>
 
-      <TouchableOpacity style={Styles.button}>
-        <Text style={Styles.textContainer}>Terms {'&'} Conditions</Text>
-        <Text style={Styles.arrow}>{'>'}</Text>
-      </TouchableOpacity>
-
-      <View style={Styles.separator}></View>
-
-      <TouchableOpacity style={Styles.button}>
+      <TouchableOpacity
+        style={Styles.button}
+        onPress={() => {
+          navigation.navigate('PrivacyPolicy');
+        }}>
         <Text style={Styles.textContainer}>Privacy Policy</Text>
         <Text style={Styles.arrow}>{'>'}</Text>
       </TouchableOpacity>

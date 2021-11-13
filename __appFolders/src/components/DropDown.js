@@ -67,7 +67,6 @@ export default DropDown = props => {
             placeholder={placeholder}
             style={styles.dropDown}
             theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-            // color={theme === 'dark'? }
             open={open}
             value={value}
             items={items}

@@ -17,24 +17,24 @@ import {
   ScrollView,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import Colors from '../../../constants/Colors';
+import Colors from '../../constants/Colors';
 import firestore from '@react-native-firebase/firestore';
-import DismissKeyboard from '../../components/DismissKeyboard';
-import Constants from '../../../constants/PhoneDimentions';
-import ProfileTextField from '../../components/ProfileTextField';
+import DismissKeyboard from '../components/DismissKeyboard';
+import Constants from '../../constants/PhoneDimentions';
+import ProfileTextField from '../../src/components/ProfileTextField';
 import {
   formatDateLong,
   formatDateShort,
   formatNormalDate,
-} from '../../../modules/DateModule';
-import ProfileTextInput from '../../components/ProfileTextInput';
+} from '../../modules/DateModule';
+import ProfileTextInput from '../components/ProfileTextInput';
 import storage from '@react-native-firebase/storage';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import Images from '../../../constants/Images';
-import {ThemeContext} from '../../../context/LayoutContext';
-import DropDown from '../../components/DropDown';
+import Images from '../../constants/Images';
+import {ThemeContext} from '../../context/LayoutContext';
+import DropDown from '../components/DropDown';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import LoginValidation from '../../../validation/LoginValidation';
+import LoginValidation from '../../validation/LoginValidation';
 import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 export default UserProfile = props => {

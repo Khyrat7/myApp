@@ -40,29 +40,29 @@ export default UserProfile = props => {
     getUserData();
   }, [user]);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => {
-            navigation.navigate('HomeScreen');
-          }}>
-          <Text style={styles.headerText}>⇦</Text>
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => {
-            /// navigating to edit profile temroary for testing
-            navigation.navigate('EditProfile');
-          }}>
-          <Text style={styles.headerText}>⚙️</Text>
-        </TouchableOpacity>
-      ),
-    });
-  });
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerLeft: () => (
+  //       <TouchableOpacity
+  //         style={styles.headerButton}
+  //         onPress={() => {
+  //           navigation.navigate('HomeScreen');
+  //         }}>
+  //         <Text style={styles.headerText}>⇦</Text>
+  //       </TouchableOpacity>
+  //     ),
+  //     headerRight: () => (
+  //       <TouchableOpacity
+  //         style={styles.headerButton}
+  //         onPress={() => {
+  //           /// navigating to edit profile temroary for testing
+  //           navigation.navigate('EditProfile');
+  //         }}>
+  //         <Text style={styles.headerText}>⚙️</Text>
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // });
 
   // fetching
   const userID = auth().currentUser.uid;

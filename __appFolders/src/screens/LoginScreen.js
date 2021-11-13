@@ -164,10 +164,7 @@ export default LoginScreen = props => {
             // Case Email is Varified
             // Success login
             setIsLoading(false);
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'DirectScreen'}],
-            });
+            // Navigation will be handled in the splashScreen onAuthChanged Function
           } else {
             // Case Email is not Varified
             Alert.alert(
