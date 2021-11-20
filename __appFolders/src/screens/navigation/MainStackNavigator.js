@@ -111,7 +111,7 @@ const MainStackNavigator = () => {
         <Stack.Screen
           name="CartScreen"
           component={CartScreen}
-          options={{title: ' '}}
+          options={{title: 'My Cart'}}
         />
 
         <Stack.Screen

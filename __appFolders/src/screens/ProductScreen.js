@@ -3,11 +3,9 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
   ScrollView,
   Image,
   SafeAreaView,
-  LogBox,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Colors from '../../constants/Colors';
@@ -18,6 +16,7 @@ import Constants from '../../constants/PhoneDimentions';
 import Swiper from 'react-native-swiper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Rating, AirbnbRating} from 'react-native-ratings';
+import {useDispatch, useSelector} from 'react-redux';
 
 export default ProductScreen = props => {
   // _________ Props and Hooks _________
@@ -41,14 +40,11 @@ export default ProductScreen = props => {
     });
   });
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     getColorsArray();
     setRating(product.rating / product.totalReviews);
-    // LogBox.ignoreLogs([
-    //   'Non-serializable values were found in the navigation state',
-    // ]);
-
-    // addReview(5, 'very good', userID, product);
   }, []);
 
   // _________ Fetches _________
@@ -63,32 +59,6 @@ export default ProductScreen = props => {
       colorsArray.push({label: color, value: color});
       setColorDDItems(colorsArray);
     });
-  };
-  // adding review
-  addReview = async (enteredRating, review, userID, product) => {
-    let newRating = product.rating + enteredRating;
-    let newTotalReviews = product.totalReviews + 1;
-    try {
-      await firestore()
-        .collection('products')
-        .doc(product.key)
-        .update({
-          reviews: firestore.FieldValue.arrayUnion({
-            key: userID,
-            rating: enteredRating,
-            review: review,
-            reviewDate: new Date().toUTCString(),
-          }),
-        })
-        .then(
-          await firestore().collection('products').doc(product.key).update({
-            rating: newRating,
-            totalReviews: newTotalReviews,
-          }),
-        );
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   // _________ Styles _________

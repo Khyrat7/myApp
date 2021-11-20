@@ -1,14 +1,13 @@
 import React, {useContext} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import Icon from 'react-native-vector-icons/AntDesign';
+
 import HomeScreen from '../HomeScreen';
 import NotificationsScreen from '../NotificationsScreen';
 import SearchScreen from '../SearchScreen';
-import DirectScreen from '../DirectScreen';
 import Colors from '../../../constants/Colors';
 import {ThemeContext} from '../../../context/LayoutContext';
-import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
-import Icon from 'react-native-vector-icons/AntDesign';
-import DrawerNavigator from './DrawerNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -45,7 +44,7 @@ export default BottomTabNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarLabel: 'Home',
           tabBarIcon: ({color}) => <Icon name="home" color={color} size={30} />,
           tabBarBadge: 3,
@@ -55,7 +54,7 @@ export default BottomTabNavigator = () => {
         name="Search"
         component={SearchScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarLabel: 'Search',
 
           tabBarIcon: ({color}) => (
@@ -69,7 +68,7 @@ export default BottomTabNavigator = () => {
         name="Notifications"
         component={NotificationsScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarLabel: 'notification',
 
           tabBarIcon: ({color}) => (

@@ -1,60 +1,47 @@
-import React, {
-  useLayoutEffect,
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  SafeAreaView,
-  SnapshotViewIOSBase,
-} from 'react-native';
-import auth from '@react-native-firebase/auth';
-import Colors from '../../constants/Colors';
+import React, {useEffect, useState, useContext, useLayoutEffect} from 'react';
+import {View, StyleSheet, FlatList, SafeAreaView} from 'react-native';
+import {useSelector} from 'react-redux';
+import {Item, HeaderButtons} from 'react-navigation-header-buttons';
+
 import {ThemeContext} from '../../context/LayoutContext';
-import firestore from '@react-native-firebase/firestore';
-import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import ProductFeed from '../components/ProductFeed';
-import Constants from '../../constants/PhoneDimentions';
-import Swiper from 'react-native-swiper';
+import HeaderButton from '../components/HeaderButton';
 
 export default HomeScreen = props => {
-  // Props and Hooks
-  const {navigation, route} = props;
-  const {theme, themeColors, setTheme} = useContext(ThemeContext);
+  // _____ Props and Hooks _____
+  const {navigation} = props;
+  const {themeColors} = useContext(ThemeContext);
   const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState([]);
 
-  userID = auth().currentUser.uid;
+  const products = useSelector(state => state.products);
 
-  const getProducts = async () => {
-    const productsArray = [];
-    try {
-      await firestore()
-        .collection('products')
-        .get()
-        .then(res => {
-          res.docs.forEach(document => {
-            productsArray.push(document.data());
-            setProducts(productsArray);
-          });
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {}, []);
 
-  useEffect(() => {
-    getProducts();
-    // console.log('products Array : ', products);
-  }, []);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="Home"
+            // iconName="star"
+            iconName="file-tray-stacked-outline"
+            onPress={() => navigation.toggleDrawer()}
+          />
+        </HeaderButtons>
+      ),
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="Home"
+            iconName="cart-outline"
+            onPress={() => navigation.navigate('CartScreen')}
+          />
+        </HeaderButtons>
+      ),
+    });
+  });
 
-  // Styles
+  // _____ Styles _____
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -68,8 +55,6 @@ export default HomeScreen = props => {
     <SafeAreaView style={{backgroundColor: themeColors.background}}>
       <FlatList
         data={products}
-        // the product object has a value for the Key === product id
-        // keyExtractor={(item, index) => item.key + index}
         ItemSeparatorComponent={() => <View></View>}
         renderItem={product => {
           return (
