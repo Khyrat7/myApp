@@ -9,6 +9,7 @@ import {
 import PhoneDimentions from '../../constants/PhoneDimentions';
 import Colors from '../../constants/Colors';
 import {ThemeContext} from '../../context/LayoutContext';
+import {RFValue, RFPercentage} from 'react-native-responsive-fontsize';
 
 export default LoginButton = props => {
   const {isLoading, onPress, title} = props;
@@ -44,7 +45,7 @@ export default LoginButton = props => {
       alignSelf: 'center',
       color: Colors.white,
       fontWeight: 'bold',
-      fontSize: 16,
+      fontSize: RFPercentage(2),
     },
   });
 

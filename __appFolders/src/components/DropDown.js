@@ -3,6 +3,7 @@ import {StyleSheet, View, Text} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Constants from '../../constants/PhoneDimentions';
 import {ThemeContext} from '../../context/LayoutContext';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 export default DropDown = props => {
   // Props & Hooks
@@ -23,7 +24,7 @@ export default DropDown = props => {
   // Styles
   const styles = StyleSheet.create({
     topContainer: {
-      height: Constants.screenHeight * 0.07,
+      height: Constants.screenHeight * 0.1,
       marginBottom: Constants.screenHeight * 0.01,
     },
     container: {
@@ -44,11 +45,12 @@ export default DropDown = props => {
       paddingVertical: '1%',
       color: themeColors.mainFont,
       backgroundColor: themeColors.fieldColor,
+      fontSize: 30,
     },
     text: {
       color: themeColors.titleFont,
       width: '80%',
-      fontSize: 14,
+      fontSize: RFPercentage(2),
       textAlign: 'left',
       fontWeight: 'bold',
     },
@@ -65,7 +67,6 @@ export default DropDown = props => {
             placeholder={placeholder}
             style={styles.dropDown}
             theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-            // color={theme === 'dark'? }
             open={open}
             value={value}
             items={items}
@@ -74,9 +75,9 @@ export default DropDown = props => {
             setItems={setItems}
             onChangeValue={onChangeValue}
             dropDownDirection="AUTO"
-            // mode="BADGE"
             bottomOffset={100}
             listMode="MODAL"
+            textStyle={{fontSize: RFPercentage(2)}}
           />
         </View>
       </View>

@@ -1,56 +1,58 @@
-import React, {useLayoutEffect, useEffect, useState, useContext} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, {
+  useLayoutEffect,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView,
+  SnapshotViewIOSBase,
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Colors from '../../constants/Colors';
 import {ThemeContext} from '../../context/LayoutContext';
 import firestore from '@react-native-firebase/firestore';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import ProductFeed from '../components/ProductFeed';
+import Constants from '../../constants/PhoneDimentions';
+import Swiper from 'react-native-swiper';
 
-const HomeScreen = props => {
+export default HomeScreen = props => {
   // Props and Hooks
   const {navigation, route} = props;
   const {theme, themeColors, setTheme} = useContext(ThemeContext);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
 
   userID = auth().currentUser.uid;
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: 'Home Page',
-      headerLeft: () => (
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => {
-            auth().signOut();
-          }}>
-          <Text style={styles.headerText}>Sign Out</Text>
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => {
-            navigation.navigate('UserProfile');
-          }}>
-          <Text style={styles.headerText}>Profile</Text>
-        </TouchableOpacity>
-      ),
-    });
-  });
-
-  onClick = () => {
+  const getProducts = async () => {
+    const productsArray = [];
     try {
-      console.log(theme);
-      theme === 'dark' ? setTheme('light') : setTheme('dark');
-
-      firestore()
-        .collection('userObjects')
-        .doc(userID)
-        .update({
-          appTheme: theme === 'dark' ? 'light' : 'dark',
+      await firestore()
+        .collection('products')
+        .get()
+        .then(res => {
+          res.docs.forEach(document => {
+            productsArray.push(document.data());
+            setProducts(productsArray);
+          });
         });
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    getProducts();
+    // console.log('products Array : ', products);
+  }, []);
 
   // Styles
   const styles = StyleSheet.create({
@@ -60,37 +62,32 @@ const HomeScreen = props => {
       alignContent: 'center',
       backgroundColor: themeColors.background,
     },
-    headerText: {
-      width: '100%',
-      height: 50,
-      fontSize: 16,
-      color: themeColors.headerFont,
-      textAlign: 'center',
-    },
-    headerButton: {
-      alignContent: 'center',
-      marginHorizontal: 15,
-      marginTop: 30,
-    },
   });
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={async () => {
-          await onClick();
-        }}>
-        <Text
-          style={{
-            color: themeColors.titleFont,
-            fontSize: 40,
-            textAlign: 'center',
-          }}>
-          Change Theme
-        </Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={{backgroundColor: themeColors.background}}>
+      <FlatList
+        data={products}
+        // the product object has a value for the Key === product id
+        // keyExtractor={(item, index) => item.key + index}
+        ItemSeparatorComponent={() => <View></View>}
+        renderItem={product => {
+          return (
+            <ProductFeed
+              onPress={() => {
+                try {
+                  navigation.navigate('ProductScreen', {
+                    product: product.item,
+                  });
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+              product={product}
+            />
+          );
+        }}
+      />
+    </SafeAreaView>
   );
 };
-
-export default HomeScreen;

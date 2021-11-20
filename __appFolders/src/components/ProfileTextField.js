@@ -1,9 +1,9 @@
 import React, {useContext} from 'react';
 import {View, StyleSheet, Text, TextInput} from 'react-native';
-import PhoneDimentions from '../../constants/PhoneDimentions';
 import Colors from '../../constants/Colors';
 import Constants from '../../constants/PhoneDimentions';
 import {ThemeContext} from '../../context/LayoutContext';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 export default ProfileTextField = props => {
   const {title, value, selectedWidth} = props;
@@ -14,7 +14,7 @@ export default ProfileTextField = props => {
 
   const styles = StyleSheet.create({
     topContainer: {
-      height: PhoneDimentions.screenHeight * 0.07,
+      height: Constants.screenHeight * 0.1,
       marginBottom: Constants.screenHeight * 0.01,
     },
     container: {
@@ -32,17 +32,18 @@ export default ProfileTextField = props => {
       borderWidth: 1,
       borderColor: themeColors.border,
       marginHorizontal: '10%',
-      borderRadius: PhoneDimentions.screenHeight * 0.01,
+      borderRadius: Constants.screenHeight * 0.01,
       paddingHorizontal: '5%',
-      paddingVertical: '1%',
+      paddingVertical: 10,
       backgroundColor: themeColors.fieldColor,
       color: themeColors.mainFont,
+      fontSize: RFPercentage(2),
     },
     text: {
       color: themeColors.titleFont,
       width: '80%',
       marginHorizontal: '10%',
-      fontSize: 14,
+      fontSize: RFPercentage(2),
       textAlign: 'left',
       fontWeight: 'bold',
     },

@@ -30,7 +30,7 @@ export default LayoutContext = ({children}) => {
 
   const themeColors = {
     mainFont: theme === 'dark' ? Colors.white : Colors.black,
-    titleFont: theme === 'dark' ? Colors.white : Colors.blue,
+    titleFont: theme === 'dark' ? Colors.orange : Colors.blue,
     fieldColor: theme === 'dark' ? Colors.Darkgray : Colors.lightWhite,
     background: theme === 'dark' ? Colors.black : Colors.white,
     border: theme === 'dark' ? Colors.white : Colors.black,
