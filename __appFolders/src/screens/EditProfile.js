@@ -17,8 +17,14 @@ import {
   ScrollView,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import Colors from '../../constants/Colors';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {Item, HeaderButtons} from 'react-navigation-header-buttons';
+
+import Colors from '../../constants/Colors';
 import DismissKeyboard from '../components/DismissKeyboard';
 import Constants from '../../constants/PhoneDimentions';
 import ProfileTextField from '../../src/components/ProfileTextField';
@@ -28,14 +34,11 @@ import {
   formatNormalDate,
 } from '../../modules/DateModule';
 import ProfileTextInput from '../components/ProfileTextInput';
-import storage from '@react-native-firebase/storage';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Images from '../../constants/Images';
 import {ThemeContext} from '../../context/LayoutContext';
 import DropDown from '../components/DropDown';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import LoginValidation from '../../validation/LoginValidation';
-import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import CustomHeaderButton from '../components/HeaderButton';
 
 export default UserProfile = props => {
   // Props & Hooks
@@ -74,78 +77,85 @@ export default UserProfile = props => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => {
-            // // Checking if any changes took place by the user
-            if (!edited && !imageChanged) {
-              navigation.goBack();
-            } else {
-              Alert.alert(
-                'Save Changes?',
-                'Do you want to save the changes you made ??',
-                [
-                  {
-                    text: 'Yes',
-                    // saving changes
-                    onPress: async () => {
-                      setIsLoading(true);
-                      try {
-                        await handleSaveClicked();
+        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+          <Item
+            title="back"
+            iconSize={35}
+            iconName="chevron-back-outline"
+            onPress={() => {
+              // Checking if any changes took place by the user
+              if (!edited && !imageChanged) {
+                navigation.goBack();
+              } else {
+                Alert.alert(
+                  'Save Changes?',
+                  'Do you want to save the changes you made ??',
+                  [
+                    {
+                      text: 'Yes',
+                      // saving changes
+                      onPress: async () => {
+                        setIsLoading(true);
+                        try {
+                          await handleSaveClicked();
+                          if (!isLoading) {
+                            setEdited(false);
+                            setImageChanged(false);
+                            navigation.goBack();
+                            Alert.alert('Saved', 'Changes Saved Successfully.');
+                          } else {
+                            null;
+                          }
+                        } catch (error) {
+                          console.log(error);
+                          setIsLoading(false);
+                        }
+                      },
+                    },
+                    {
+                      // ignore changes and navigate back
+                      text: 'No',
+                      onPress: () => {
                         if (!isLoading) {
                           setEdited(false);
                           setImageChanged(false);
                           navigation.goBack();
-                          Alert.alert('Saved', 'Changes Saved Successfully.');
                         } else {
                           null;
                         }
-                      } catch (error) {
-                        console.log(error);
-                        setIsLoading(false);
-                      }
+                      },
                     },
-                  },
-                  {
-                    // ignore changes and navigate back
-                    text: 'No',
-                    onPress: () => {
-                      if (!isLoading) {
-                        setEdited(false);
-                        setImageChanged(false);
-                        navigation.goBack();
-                      } else {
-                        null;
-                      }
-                    },
-                  },
-                ],
-              );
-            }
-          }}>
-          <Text style={styles.headerText}>⇦</Text>
-        </TouchableOpacity>
+                  ],
+                );
+              }
+            }}
+          />
+        </HeaderButtons>
       ),
       headerRight: () =>
         // only shows if any changes did take place by user
         edited || imageChanged ? (
-          <TouchableOpacity
-            style={styles.headerButton}
-            onPress={() => {
-              setIsLoading(true);
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+              title="undo"
+              iconSize={23}
+              iconName="arrow-undo-outline"
+              onPress={() => {
+                setIsLoading(true);
 
-              setImage(user.imageURL);
-              setName(user.name);
-              setUserName(user.username);
-              setPhoneNumber(user.phoneNumber);
-              setGender(user.gender);
+                setImage(user.imageURL);
+                setName(user.name);
+                setUserName(user.username);
+                setPhoneNumber(user.phoneNumber);
+                setGender(user.gender);
+                setBirthDate(user.birthDate);
 
-              setEdited(false);
-              setImageChanged(false);
-              setIsLoading(false);
-            }}>
-            <Text style={styles.headerText}>Undo</Text>
-          </TouchableOpacity>
+                setEdited(false);
+                setImageChanged(false);
+                setIsLoading(false);
+              }}
+            />
+          </HeaderButtons>
         ) : null,
     });
   });

@@ -5,11 +5,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../constants/Colors';
 
 const CustomHeaderButton = props => {
+  Icon.loadFont();
+
   return (
     <HeaderButton
       {...props}
       IconComponent={Icon}
-      iconSize={23}
+      iconSize={props.iconSize}
       color={Colors.white}
     />
   );

@@ -17,10 +17,7 @@ export default BottomTabNavigator = () => {
 
   return (
     <Tab.Navigator
-      // initialRouteName="Home"
-      name="myDemoApp"
-      // initialRouteName="Home"
-
+      initialRouteName="Home"
       screenOptions={{
         headerStyle: {
           backgroundColor: themeColors.header,
@@ -34,7 +31,7 @@ export default BottomTabNavigator = () => {
 
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: RFPercentage(3),
+          fontSize: RFPercentage(2),
         },
         tabBarOptions: {
           showIcon: true,
@@ -46,7 +43,9 @@ export default BottomTabNavigator = () => {
         options={{
           headerShown: true,
           tabBarLabel: 'Home',
-          tabBarIcon: ({color}) => <Icon name="home" color={color} size={30} />,
+          tabBarIcon: ({color}) => (
+            <Icon name="home" color={color} size={RFPercentage(3)} />
+          ),
           tabBarBadge: 3,
         }}
       />
@@ -58,7 +57,7 @@ export default BottomTabNavigator = () => {
           tabBarLabel: 'Search',
 
           tabBarIcon: ({color}) => (
-            <Icon name="search1" color={color} size={30} />
+            <Icon name="search1" color={color} size={RFPercentage(3)} />
           ),
           tabBarBadge: 1,
         }}
@@ -69,10 +68,10 @@ export default BottomTabNavigator = () => {
         component={NotificationsScreen}
         options={{
           headerShown: true,
-          tabBarLabel: 'notification',
+          tabBarLabel: 'Notification',
 
           tabBarIcon: ({color}) => (
-            <Icon name="notification" color={color} size={30} />
+            <Icon name="notification" color={color} size={RFPercentage(3)} />
           ),
           tabBarBadge: 1,
         }}

@@ -14,15 +14,21 @@ import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 const Drawer = createDrawerNavigator();
 
 export default DrawerNavigator = () => {
-  const {themeColors} = useContext(ThemeContext);
+  const {themeColors, theme} = useContext(ThemeContext);
 
   return (
     <Drawer.Navigator
       name="myDemoApp"
+      initialRouteName="Main"
       screenOptions={{
         headerShown: false,
+        drawerInactiveTintColor: Colors.white,
+        drawerActiveTintColor: theme === 'light' ? Colors.blue : Colors.white,
+        drawerActiveBackgroundColor:
+          theme === 'light' ? Colors.white : Colors.black,
         drawerStyle: {
-          //   backgroundColor: themeColors.header,
+          backgroundColor: themeColors.header,
+          width: 240,
         },
         headerStyle: {
           backgroundColor: themeColors.header,
@@ -34,11 +40,19 @@ export default DrawerNavigator = () => {
         headerTintColor: Colors.white,
       }}>
       <Drawer.Screen name="Main" component={BottomTabNavigator} />
-      <Drawer.Screen name="Settings" component={SettingsScreen} />
-      <Drawer.Screen name="My Profile" component={UserProfile} />
+      <Drawer.Screen
+        name="Settings"
+        component={SettingsScreen}
+        headerShown={true}
+      />
+      <Drawer.Screen
+        name="My Profile"
+        component={UserProfile}
+        headerShown={true}
+      />
       <Drawer.Screen name="My Cart" component={CartScreen} />
       <Drawer.Screen name="Privacy Policy" component={PrivacyPolicy} />
-      <Drawer.Screen name="Terms and Conditions" component={Terms} />
+      <Drawer.Screen name="Terms & Conditions" component={Terms} />
     </Drawer.Navigator>
   );
 };

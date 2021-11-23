@@ -20,6 +20,7 @@ export default function NotificationsScreen(props) {
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
           <Item
             title="Home"
+            iconSize={23}
             iconName="file-tray-stacked-outline"
             onPress={() => navigation.toggleDrawer()}
           />
@@ -29,6 +30,7 @@ export default function NotificationsScreen(props) {
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
           <Item
             title="Home"
+            iconSize={23}
             iconName="cart-outline"
             onPress={() => navigation.navigate('CartScreen')}
           />

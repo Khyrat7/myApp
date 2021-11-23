@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -7,23 +7,42 @@ import {
   TextInput,
   Switch,
 } from 'react-native';
-import {ThemeContext} from '../../context/LayoutContext';
-import Constants from '../../constants/PhoneDimentions';
 import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+import {ThemeContext} from '../../context/LayoutContext';
+import Constants from '../../constants/PhoneDimentions';
 
 export default function Settings(props) {
+  Icon.loadFont();
+
   // ____ Props & Hooks ____
 
   const {navigation, route} = props;
   const {theme, themeColors, setTheme} = useContext(ThemeContext);
+  console.log(theme);
 
   const [language, setLanguage] = useState('Eng');
   const [lanSwitch, setLangSwitch] = useState(true);
-  const [currentTheme, setCurrentTheme] = useState(theme);
-  const [themeSwitch, setThemeSwitch] = useState(true);
+  const [themeSwitch, setThemeSwitch] = useState(() => {
+    if (theme === 'dark') {
+      return false;
+    }
+    if (theme === 'light') {
+      return true;
+    }
+  });
+  const userID = auth().currentUser.uid;
 
   useEffect(() => {}, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+    });
+  });
 
   // ____ Switchs _____
   toggleLangSwitch = () => {
@@ -67,8 +86,6 @@ export default function Settings(props) {
       alignSelf: 'flex-start',
     },
     button: {
-      //   borderColor: themeColors.border,
-      //   borderWidth: 0.5,
       flexDirection: 'row',
       alignContent: 'space-between',
       paddingHorizontal: Constants.screenWidth * 0.05,
@@ -103,18 +120,20 @@ export default function Settings(props) {
 
   return (
     <View style={{backgroundColor: themeColors.background, flex: 1}}>
-      <TouchableOpacity
+      <TouchableOpacity // Edit Profile
         style={Styles.button}
         onPress={() => {
           navigation.navigate('EditProfile');
         }}>
         <Text style={Styles.textContainer}>Edit Profile</Text>
-        <Text style={Styles.arrow}>{'>'}</Text>
+        <Text style={Styles.arrow}>
+          <Icon name="chevron-forward-outline" size={RFPercentage(3)} />
+        </Text>
       </TouchableOpacity>
-
       <View style={Styles.separator}></View>
 
-      <View style={Styles.button}>
+      <View // Language Switch
+        style={Styles.button}>
         <Text style={Styles.textContainer}>Language: {language}</Text>
         <View style={Styles.switch}>
           <Switch
@@ -126,10 +145,10 @@ export default function Settings(props) {
           />
         </View>
       </View>
-
       <View style={Styles.separator}></View>
 
-      <View style={Styles.button}>
+      <View // Theme Switch
+        style={Styles.button}>
         <Text style={Styles.textContainer}>Theme: {theme}</Text>
         <View style={Styles.switch}>
           <Switch
@@ -143,33 +162,37 @@ export default function Settings(props) {
       </View>
       <View style={Styles.separator}></View>
 
-      <TouchableOpacity
+      <TouchableOpacity // Terms & Conditions
         style={Styles.button}
         onPress={() => {
           navigation.navigate('Terms');
         }}>
         <Text style={Styles.textContainer}>Terms {'&'} Conditions</Text>
-        <Text style={Styles.arrow}>{'>'}</Text>
+        <Text style={Styles.arrow}>
+          <Icon name="chevron-forward-outline" size={RFPercentage(3)} />
+        </Text>
       </TouchableOpacity>
-
       <View style={Styles.separator}></View>
 
-      <TouchableOpacity
+      <TouchableOpacity // Privacy policy
         style={Styles.button}
         onPress={() => {
           navigation.navigate('PrivacyPolicy');
         }}>
         <Text style={Styles.textContainer}>Privacy Policy</Text>
-        <Text style={Styles.arrow}>{'>'}</Text>
+        <Text style={Styles.arrow}>
+          <Icon name="chevron-forward-outline" size={RFPercentage(3)} />
+        </Text>
       </TouchableOpacity>
-
       <View style={Styles.separator}></View>
 
-      <TouchableOpacity style={Styles.button}>
+      <TouchableOpacity // Rate App.
+        style={Styles.button}>
         <Text style={Styles.textContainer}>Rate App.</Text>
-        <Text style={Styles.arrow}>{'>'}</Text>
+        <Text style={Styles.arrow}>
+          <Icon name="chevron-forward-outline" size={RFPercentage(3)} />
+        </Text>
       </TouchableOpacity>
-
       <View style={Styles.separator}></View>
     </View>
   );

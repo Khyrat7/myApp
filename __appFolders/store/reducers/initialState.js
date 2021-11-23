@@ -1,17 +1,20 @@
 import firestore from '@react-native-firebase/firestore';
 
-const dataArray = [];
+// const dataArray = [];
 
-firestore()
-  .collection('products')
-  .get()
-  .then(res => {
-    res.forEach(document => {
-      dataArray.push(document.data());
-    });
-  });
+// firestore()
+//   .collection('products')
+//   .get()
+//   .then(res => {
+//     res.forEach(document => {
+//       dataArray.push(document.data());
+//       console.log('initial state product : ', document.data());
+//     });
+//     console.log('products data : ', dataArray);
+//   });
 
 export default {
-  products: dataArray,
-  product: null,
+  products: [],
+  product: {},
+  cart: [],
 };

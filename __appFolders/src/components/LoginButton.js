@@ -50,7 +50,7 @@ export default LoginButton = props => {
   });
 
   return (
-    <View style={styles.topContainer}>
+    <View style={{...styles.topContainer, ...props.style}}>
       {isLoading ? (
         <TouchableOpacity style={styles.button}>
           <ActivityIndicator

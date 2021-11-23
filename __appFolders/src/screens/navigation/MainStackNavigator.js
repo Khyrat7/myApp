@@ -19,8 +19,6 @@ import CartScreen from '../CartScreen';
 import SearchScreen from '../SearchScreen';
 import DrawerNavigator from './DrawerNavigator';
 
-import BottomTabNavigator from './BottomTabNavigator';
-
 const Stack = createStackNavigator();
 
 const MainStackNavigator = () => {
@@ -36,12 +34,13 @@ const MainStackNavigator = () => {
           headerStyle: {
             backgroundColor: themeColors.header,
           },
+          // animationEnabled: false,
 
           headerTintColor: Colors.white,
 
           headerTitleStyle: {
             fontWeight: 'bold',
-            fontSize: RFPercentage(3),
+            fontSize: RFPercentage(2),
           },
         }}>
         <Stack.Screen
@@ -87,19 +86,19 @@ const MainStackNavigator = () => {
         <Stack.Screen
           name="Terms"
           component={Terms}
-          options={{headerShown: true, title: ''}}
+          options={{title: 'Terms & Conditions'}}
         />
 
         <Stack.Screen
           name="PrivacyPolicy"
           component={PrivacyPolicy}
-          options={{headerShown: true, title: ' '}}
+          options={{title: 'Privacy Policy'}}
         />
 
         <Stack.Screen
           name="ProductScreen"
           component={ProductScreen}
-          options={{headerShown: true, title: ' '}}
+          options={{title: ' '}}
         />
 
         <Stack.Screen

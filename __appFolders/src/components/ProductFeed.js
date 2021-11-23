@@ -1,12 +1,11 @@
-import React, {useLayoutEffect, useEffect, useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
-import auth from '@react-native-firebase/auth';
-import Colors from '../../constants/Colors';
-import {ThemeContext} from '../../context/LayoutContext';
-import Constants from '../../constants/PhoneDimentions';
-import firestore from '@react-native-firebase/firestore';
 import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import Swiper from 'react-native-swiper';
+
+import {ThemeContext} from '../../context/LayoutContext';
+import Constants from '../../constants/PhoneDimentions';
+import Card from './Card';
 
 export default ProductFeed = props => {
   // Props and Hooks
@@ -15,18 +14,6 @@ export default ProductFeed = props => {
 
   // Styles
   const styles = StyleSheet.create({
-    container1: {
-      marginTop: 10,
-      flex: 1,
-      width: '95%',
-      alignSelf: 'center',
-      borderWidth: 1,
-      borderColor: themeColors.border,
-      borderRadius: 10,
-      // justifyContent: 'space-between',
-      backgroundColor: themeColors.background,
-      marginBottom: 20,
-    },
     slide: {
       flex: 1,
       justifyContent: 'center',
@@ -58,7 +45,7 @@ export default ProductFeed = props => {
   });
 
   return (
-    <View style={styles.container1}>
+    <Card>
       <Text style={styles.textTitle} numberOfLines={3}>
         {product.item.productName}
       </Text>
@@ -96,6 +83,6 @@ export default ProductFeed = props => {
           </Text>
         </View>
       </TouchableOpacity>
-    </View>
+    </Card>
   );
 };

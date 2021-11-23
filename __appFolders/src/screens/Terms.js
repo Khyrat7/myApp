@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useLayoutEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {ThemeContext} from '../../context/LayoutContext';
 import Constants from '../../constants/PhoneDimentions';
@@ -10,9 +10,13 @@ export default function Terms(props) {
 
   const {navigation, route} = props;
   const {theme, themeColors, setTheme} = useContext(ThemeContext);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+    });
+  });
 
   const Styles = StyleSheet.create({});
-
   return (
     <View style={{backgroundColor: themeColors.background, flex: 1}}>
       <Text></Text>
