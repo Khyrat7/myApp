@@ -20,6 +20,7 @@ export default DrawerNavigator = () => {
     <Drawer.Navigator
       name="myDemoApp"
       screenOptions={{
+        headerShown: false,
         drawerStyle: {
           //   backgroundColor: themeColors.header,
         },
