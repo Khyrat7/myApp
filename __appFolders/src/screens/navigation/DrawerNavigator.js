@@ -1,15 +1,15 @@
 import React, {useContext} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import SettingsScreen from '../Settings';
-import HomeScreen from '../HomeScreen';
-import CartScreen from '../CartScreen';
+import AdminBottomNavigator from './AdminBottomNavigator';
 import UserProfile from '../UserProfile';
+import OrdersScreen from '../OrdersScreen';
 import PrivacyPolicy from '../PrivacyPolicy';
 import Terms from '../Terms';
 import BottomTabNavigator from './BottomTabNavigator';
 import Colors from '../../../constants/Colors';
 import {ThemeContext} from '../../../context/LayoutContext';
-import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 const Drawer = createDrawerNavigator();
 
@@ -50,9 +50,27 @@ export default DrawerNavigator = () => {
         component={UserProfile}
         headerShown={true}
       />
-      <Drawer.Screen name="My Cart" component={CartScreen} />
-      <Drawer.Screen name="Privacy Policy" component={PrivacyPolicy} />
-      <Drawer.Screen name="Terms & Conditions" component={Terms} />
+      <Drawer.Screen
+        name="My Orders"
+        component={OrdersScreen}
+        headerShown={true}
+      />
+      <Drawer.Screen
+        name="Privacy Policy"
+        component={PrivacyPolicy}
+        headerShown={true}
+      />
+      <Drawer.Screen
+        name="Terms & Conditions"
+        component={Terms}
+        headerShown={true}
+      />
+
+      <Drawer.Screen
+        name="Admin Dashboard"
+        component={AdminBottomNavigator}
+        headerShown={true}
+      />
     </Drawer.Navigator>
   );
 };

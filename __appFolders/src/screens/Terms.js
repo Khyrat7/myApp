@@ -15,7 +15,6 @@ export default function Terms(props) {
       headerShown: true,
     });
   });
-
   const Styles = StyleSheet.create({});
   return (
     <View style={{backgroundColor: themeColors.background, flex: 1}}>

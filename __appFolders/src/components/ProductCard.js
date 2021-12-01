@@ -6,10 +6,11 @@ import Swiper from 'react-native-swiper';
 import {ThemeContext} from '../../context/LayoutContext';
 import Constants from '../../constants/PhoneDimentions';
 import Card from './Card';
+import Colors from '../../constants/Colors';
 
 export default ProductFeed = props => {
   // Props and Hooks
-  const {onPress, product} = props;
+  const {onPress, product, key} = props;
   const {theme, themeColors, setTheme} = useContext(ThemeContext);
 
   // Styles
@@ -46,16 +47,55 @@ export default ProductFeed = props => {
 
   return (
     <Card>
-      <Text style={styles.textTitle} numberOfLines={3}>
-        {product.item.productName}
-      </Text>
+      <TouchableOpacity onPress={onPress}>
+        <Text style={styles.textTitle} numberOfLines={3}>
+          {product.item.productName}
+        </Text>
+      </TouchableOpacity>
+
       <View // Image Swiper View
         style={{
           marginHorizontal: 5,
           marginVertical: 5,
           height: Constants.screenHeight * 0.22,
         }}>
-        <Swiper loop={true} showsButtons={false}>
+        <Swiper
+          dot={
+            <View
+              style={{
+                backgroundColor:
+                  theme === 'dark' ? Colors.Darkgray : Colors.lightGray,
+                width: 5,
+                height: 5,
+                borderRadius: 4,
+                marginLeft: 3,
+                marginRight: 3,
+                marginTop: 3,
+                marginBottom: 3,
+              }}
+            />
+          }
+          activeDot={
+            <View
+              style={{
+                backgroundColor:
+                  theme === 'dark' ? Colors.white : themeColors.buttonColor,
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                marginLeft: 3,
+                marginRight: 3,
+                marginTop: 3,
+                marginBottom: 3,
+              }}
+            />
+          }
+          paginationStyle={{
+            bottom: -25,
+            left: 10,
+            right: 10,
+          }}
+          loop>
           {product.item.photos.map((image, index) => {
             return (
               <View style={styles.slide} key={index}>
@@ -68,7 +108,7 @@ export default ProductFeed = props => {
 
       <TouchableOpacity onPress={onPress}>
         <View // Description View
-          style={{paddingLeft: 10, marginBottom: 10}}>
+          style={{paddingLeft: 10, marginBottom: 10, marginTop: 20}}>
           <Text style={styles.textHeader}>Description: </Text>
           <Text numberOfLines={1} style={styles.text}>
             {product.item.description}

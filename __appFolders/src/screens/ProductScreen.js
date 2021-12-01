@@ -16,68 +16,91 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Swiper from 'react-native-swiper';
-import DropDownPicker from 'react-native-dropdown-picker';
 import {Rating, AirbnbRating} from 'react-native-ratings';
-import {useDispatch, useSelector} from 'react-redux';
 import {Item, HeaderButtons} from 'react-navigation-header-buttons';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// Redux imports
+import {useDispatch, useSelector} from 'react-redux';
+import * as productActions from '../../store/actions/productActions';
+import * as cartActions from '../../store/actions/cartActions';
+import * as favoritActions from '../../store/actions/favoritActions';
+
+//
+//
+// Custom imports
 import {ThemeContext} from '../../context/LayoutContext';
 import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import Constants from '../../constants/PhoneDimentions';
 import CustomHeaderButton from '../components/HeaderButton';
-import * as productActions from '../../store/actions/productActions';
-import * as cartActions from '../../store/actions/cartActions';
 import LoginButton from '../components/LoginButton';
+import ReviewCard from '../components/ReviewCard';
+import ColorCard from '../components/ColorCard';
+import Colors from '../../constants/Colors';
+import {set} from 'react-native-reanimated';
 
 export default ProductScreen = props => {
   Icon.loadFont();
 
+  // _____________ Redux Hooks & State _____________
+  const dispatch = useDispatch();
+  const product = useSelector(state => state.product);
+  const cart = useSelector(state => state.cart.cartItems);
+  const favorit = useSelector(state => state.favorit);
+  const userProfile = useSelector(state => state.user);
+
   // _________ Props and Hooks _________
 
-  const {navigation, route} = props;
+  const {navigation, route, key} = props;
+  const productID = route.params.key;
   const {theme, themeColors} = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [edited, setEdited] = useState(false);
-  const [rating, setRating] = useState(0);
+  const [cartUpdating, setCartUpdating] = useState(false);
+  const [favoritUpdating, setFavoritUpdating] = useState(false);
 
-  const product = useSelector(state => state.product);
-  const productID = route.params.key;
-  // console.log('params :', route.params);
-  // console.log('product page product ID', productID);
-  // console.log('product page product data:', product);
+  const [inCart, setInCart] = useState(() => {
+    const existingIndex = cart.findIndex(prod => prod.key === productID);
+    if (existingIndex >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 
-  // _________ Colors Dropdown hooks _________
-  const [colorDDopen, setColorDDOpen] = useState(false);
-  const [color, setColor] = useState();
-  const [colorDDitems, setColorDDItems] = useState();
+  const [inFavorit, setInFavorit] = useState(() => {
+    const existingIndex = favorit.findIndex(prod => prod.key === productID);
+    if (existingIndex >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: 'Prodcut Details',
-      headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-          <Item
-            title="Home"
-            iconSize={23}
-            iconName="heart-outline"
-            onFocus={() => {}}
-            onPress={() => console.log('hi')}
-          />
-        </HeaderButtons>
-      ),
+      headerRight: () =>
+        favoritUpdating ? (
+          <ActivityIndicator style={{marginRight: 20}} color={Colors.white} />
+        ) : (
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+              title="Home"
+              iconSize={23}
+              iconName={inFavorit ? 'heart-off' : 'heart-outline'}
+              onPress={handleFavoritPressed}
+            />
+          </HeaderButtons>
+        ),
     });
   });
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     getProductData(productID);
   }, [productID, getProductData]);
 
   // _________ Fetches _________
-  userID = auth().currentUser.uid;
-
+  const productReviews = product.reviews;
   // _________ functions _________
 
   // getting the product data
@@ -86,33 +109,82 @@ export default ProductScreen = props => {
       setIsLoading(true);
       try {
         await dispatch(productActions.getProductData(productID));
-        getColorsArray();
-        setRating(product.rating / product.totalReviews);
+        // await dispatch(
+        //   productActions.addReview(productID, 4, 'dfsdfsadfsa', userProfile),
+        // );
+        checkCartPresents();
+        checkFavoritPresents();
       } catch (error) {
         console.log(error);
       }
       setIsLoading(false);
     },
-    [productID],
+    [productID, checkCartPresents, dispatch],
   );
 
-  // getting the available colors for the dropdown
-  getColorsArray = () => {
-    let colorsArray = [];
-    product.colors.map((color, index) => {
-      key = color;
-      colorsArray.push({label: color, value: color});
-      setColorDDItems(colorsArray);
-    });
+  // Add/Remove to cart
+  const handleCartPressed = async () => {
+    try {
+      setCartUpdating(true);
+      await dispatch(cartActions.toggleProductToCart(product));
+      await dispatch(cartActions.getCartProducts());
+      await dispatch(cartActions.getCartTotals());
+
+      setInCart(!inCart);
+    } catch (error) {
+      console.log(error);
+    }
+    setCartUpdating(false);
   };
 
-  // Add/Remove to cart
-  const handleCartPressed = () => {
+  // Add/Remove to favorit
+  const handleFavoritPressed = async () => {
     try {
-      dispatch(cartActions.toggleProductToCart(product));
+      setFavoritUpdating(true);
+      await dispatch(favoritActions.toggleProductToFavorit(product));
+      await dispatch(favoritActions.getFavoritProducts());
+      setInFavorit(!inFavorit);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
+    setFavoritUpdating(false);
+  };
+
+  // Checking in cart status
+  const checkCartPresents = () => {
+    const existingIndex = cart.findIndex(prod => prod.key === productID);
+    if (existingIndex >= 0) {
+      setInCart(true);
+    } else {
+      setInCart(false);
+    }
+  };
+
+  // Checking in favorit status
+  const checkFavoritPresents = () => {
+    const existingIndex = favorit.findIndex(prod => prod.key === productID);
+    if (existingIndex >= 0) {
+      setInFavorit(true);
+    } else {
+      setInFavorit(false);
+    }
+  };
+
+  // Get Sizes string
+  const getSizesString = () => {
+    const sizes = product.sizes;
+    let sizesString = '';
+    for (let index = 0; index < sizes.length; index++) {
+      const element = sizes[index];
+      const lastElement = sizes.length - 1;
+      {
+        index === lastElement
+          ? (sizesString = sizesString + element)
+          : (sizesString = sizesString + element + ' - ');
+      }
+    }
+
+    return sizesString;
   };
 
   // _________ Styles _________
@@ -171,6 +243,18 @@ export default ProductScreen = props => {
       fontSize: RFPercentage(2),
       marginLeft: 10,
     },
+    colorCard: {
+      height: 20,
+      width: 20,
+      borderRadius: 10,
+      flexDirection: 'row',
+      shadowOffset: {
+        width: 1,
+        height: 1,
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 2,
+    },
   });
 
   if (isLoading) {
@@ -195,10 +279,45 @@ export default ProductScreen = props => {
           <Text style={styles.textTitle} numberOfLines={3}>
             {product.productName}
           </Text>
-
           <View // Image Swiper View
             style={styles.swiperContainer}>
-            <Swiper loop={true} showsButtons={false}>
+            <Swiper
+              dot={
+                <View
+                  style={{
+                    backgroundColor:
+                      theme === 'dark' ? Colors.Darkgray : Colors.lightGray,
+                    width: 5,
+                    height: 5,
+                    borderRadius: 4,
+                    marginLeft: 3,
+                    marginRight: 3,
+                    marginTop: 3,
+                    marginBottom: 3,
+                  }}
+                />
+              }
+              activeDot={
+                <View
+                  style={{
+                    backgroundColor:
+                      theme === 'dark' ? Colors.white : themeColors.buttonColor,
+                    width: 8,
+                    height: 8,
+                    borderRadius: 4,
+                    marginLeft: 3,
+                    marginRight: 3,
+                    marginTop: 3,
+                    marginBottom: 3,
+                  }}
+                />
+              }
+              paginationStyle={{
+                bottom: -25,
+                left: 10,
+                right: 10,
+              }}
+              loop>
               {product.photos.map((image, index) => {
                 return (
                   <View style={styles.slide} key={index}>
@@ -208,15 +327,13 @@ export default ProductScreen = props => {
               })}
             </Swiper>
           </View>
-
           <View // Description View
-            style={{paddingLeft: 10, marginBottom: 10}}>
+            style={{paddingLeft: 10, marginBottom: 10, marginTop: 20}}>
             <Text style={styles.textHeader}>Description: </Text>
             <Text numberOfLines={12} style={styles.text}>
               {product.description}
             </Text>
           </View>
-
           <View // Price View
             style={{paddingLeft: 10, marginBottom: 10, flexDirection: 'row'}}>
             <Text style={styles.textHeader}>Price: </Text>
@@ -224,7 +341,6 @@ export default ProductScreen = props => {
               {product.price + ' EGP'}
             </Text>
           </View>
-
           <View // Category View
             style={{paddingLeft: 10, marginBottom: 10, flexDirection: 'row'}}>
             <Text style={styles.textHeader}>Category: </Text>
@@ -232,13 +348,31 @@ export default ProductScreen = props => {
               {product.category}
             </Text>
           </View>
-
           <View // Size View
             style={{paddingLeft: 10, marginBottom: 10, flexDirection: 'row'}}>
-            <Text style={styles.textHeader}>Size: </Text>
+            <Text style={styles.textHeader}>Sizes: </Text>
             <Text numberOfLines={1} style={styles.text}>
-              {product.size}
+              {getSizesString()}
             </Text>
+          </View>
+
+          <View // Colors View
+            style={{
+              paddingLeft: 10,
+              marginBottom: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text style={styles.textHeader}>Colors: </Text>
+            {product.colors.map(element => {
+              return (
+                <ColorCard
+                  style={styles.colorCard}
+                  color={element}
+                  key={element}
+                />
+              );
+            })}
           </View>
 
           <View // Delivery Time View
@@ -248,7 +382,28 @@ export default ProductScreen = props => {
               {product.deliveryTime}
             </Text>
           </View>
-
+          <LoginButton // Add/Remove to Cart Button
+            style={{
+              marginTop: 20,
+              marginBottom: 20,
+            }}
+            onPress={handleCartPressed}
+            title={
+              cartUpdating ? (
+                <ActivityIndicator />
+              ) : inCart ? (
+                <Text style={{textAlign: 'center'}}>
+                  Remove From Cart{' '}
+                  <Icon name="cart-off" size={RFPercentage(3)} />
+                </Text>
+              ) : (
+                <Text style={{textAlign: 'center'}}>
+                  Add To Cart{' '}
+                  <Icon name="cart-arrow-right" size={RFPercentage(3)} />
+                </Text>
+              )
+            }
+          />
           <View // Total Reviews View
             style={{paddingLeft: 10, marginBottom: 10, flexDirection: 'row'}}>
             <Text style={styles.textHeader}>Total Reviews: </Text>
@@ -256,54 +411,20 @@ export default ProductScreen = props => {
               {product.totalReviews}
             </Text>
           </View>
-
-          {/* <View // Colors View
-            style={{
-              paddingLeft: 10,
-              marginBottom: 10,
-              flexDirection: 'row',
-              width: Constants.screenWidth,
-              height: Constants.screenHeight * 0.03,
-              alignContent: 'center',
-            }}>
-            <Text style={styles.textHeader}>Availabel Colors: </Text>
-            <DropDownPicker
-              placeholder={product.colors[0]}
-              style={styles.dropDown}
-              theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-              open={colorDDopen}
-              value={color}
-              items={colorDDitems}
-              setOpen={setColorDDOpen}
-              setValue={setColor}
-              setItems={setColorDDItems}
-              onChangeValue={() => {
-                setEdited(true);
-              }}
-              dropDownDirection="AUTO"
-              bottomOffset={100}
-              listMode="SCROLLVIEW"
-              textStyle={{fontSize: RFPercentage(2)}}
-            />
-          </View> */}
-
-          <AirbnbRating
+          <AirbnbRating // Rating
             count={5}
-            defaultRating={rating}
+            defaultRating={product.rating / product.totalReviews}
             size={RFPercentage(3)}
             isDisabled={true}
             minValue={1}
+            showRating={false}
           />
 
-          <LoginButton
-            style={{marginTop: 20}}
-            onPress={handleCartPressed}
-            title={
-              <Text>
-                Add To Cart <Icon name="cart-outline" size={RFPercentage(3)} />
-              </Text>
-            }
-          />
+          <View style={{paddingVertical: 20}}>
+            {product.reviews.map((element, index) => {
+              return <ReviewCard review={element} key={index} />;
+            })}
+          </View>
         </SafeAreaView>
       </ScrollView>
     );

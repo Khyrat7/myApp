@@ -59,6 +59,6 @@ export function formatNormalDate(d) {
   const year = new Date(d).getFullYear();
   const monthIndex = new Date(d).getMonth();
   const monthName = mon[monthIndex];
-  const formatted = `${date} / ${monthName} / ${year}`;
+  const formatted = `${date}   ${monthName}   ${year}`;
   return formatted;
 }

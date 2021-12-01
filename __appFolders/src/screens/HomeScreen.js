@@ -12,21 +12,32 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
 import {Item, HeaderButtons} from 'react-navigation-header-buttons';
+import auth from '@react-native-firebase/auth';
+//
+//_________ Redux imports _________
+import {useSelector, useDispatch} from 'react-redux';
+import * as productsActions from '../../store/actions/productsActions';
+import * as cartActions from '../../store/actions/cartActions';
+import * as favoritActions from '../../store/actions/favoritActions';
+import * as userActions from '../../store/actions/userActions';
+import * as ordersActions from '../../store/actions/ordersActions';
 
 import {ThemeContext} from '../../context/LayoutContext';
-import ProductFeed from '../components/ProductFeed';
+import ProductCard from '../components/ProductCard';
 import CustomHeaderButton from '../components/HeaderButton';
-import * as productsActions from '../../store/actions/productsActions';
 
 export default HomeScreen = props => {
+  const products = useSelector(state => state.products.allProducts);
+  const dispatch = useDispatch();
+
   // _____ Props and Hooks _____
   const {navigation} = props;
   const {themeColors} = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefresh, setIsRefresh] = useState(false);
-  const products = useSelector(state => state.products);
+
+  const userID = auth().currentUser.uid;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -35,7 +46,7 @@ export default HomeScreen = props => {
           <Item
             title="Home"
             iconSize={23}
-            iconName="file-tray-stacked-outline"
+            iconName="notification-clear-all"
             onPress={() => navigation.toggleDrawer()}
           />
         </HeaderButtons>
@@ -43,7 +54,7 @@ export default HomeScreen = props => {
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
           <Item
-            title="Home"
+            title="Cart"
             iconSize={23}
             iconName="cart-outline"
             onPress={() => navigation.navigate('CartScreen')}
@@ -52,8 +63,6 @@ export default HomeScreen = props => {
       ),
     });
   });
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setIsLoading(true);
@@ -66,7 +75,12 @@ export default HomeScreen = props => {
   const getProductsData = useCallback(() => {
     setIsRefresh(true);
     try {
+      dispatch(userActions.getUserProfile(userID));
       dispatch(productsActions.getHomeProducts());
+      dispatch(cartActions.getCartProducts());
+      dispatch(cartActions.getCartTotals());
+      dispatch(favoritActions.getFavoritProducts());
+      dispatch(ordersActions.getOrdersProducts(userID));
     } catch (error) {
       console.log(error);
     }
@@ -91,7 +105,7 @@ export default HomeScreen = props => {
     );
   } else {
     return (
-      <SafeAreaView style={{backgroundColor: themeColors.background}}>
+      <SafeAreaView style={{backgroundColor: themeColors.background, flex: 1}}>
         <FlatList
           onRefresh={getProductsData}
           refreshing={isRefresh}
@@ -99,9 +113,8 @@ export default HomeScreen = props => {
           ItemSeparatorComponent={() => <View></View>}
           renderItem={product => {
             return (
-              <ProductFeed
+              <ProductCard
                 onPress={() => {
-                  // console.log(product.item.key);
                   try {
                     navigation.navigate('ProductScreen', {
                       key: product.item.key,

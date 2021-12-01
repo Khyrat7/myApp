@@ -122,7 +122,7 @@ export default LoginScreen = props => {
               dateOfBirth: '',
               phoneNumber: '',
               gender: '',
-              address: '',
+              addressess: [],
               location: '',
             })
             .then(
@@ -222,7 +222,6 @@ export default LoginScreen = props => {
   };
 
   forgetPasswordPressed = () => {
-    console.log('pressed');
     // Check if the email is entered with no errors
     if (!email || emailError) {
       Alert.alert('Reset Password', 'Please enter a valid Email and try again');

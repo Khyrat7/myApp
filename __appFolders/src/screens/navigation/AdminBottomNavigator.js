@@ -8,18 +8,16 @@ import Icon2 from 'react-native-vector-icons/AntDesign';
 //_________ Redux imports _________
 import {useSelector} from 'react-redux';
 
-import HomeScreen from '../HomeScreen';
-import NotificationsScreen from '../NotificationsScreen';
-import FavoritScreen from '../FavoritScreen';
-import SearchScreen from '../SearchScreen';
+import AdminMessages from '../adminScreens/AdminMessages';
+import AdminNotifications from '../adminScreens/AdminNotifications';
+import AdminOrders from '../adminScreens/AdminOrders';
+import AdminProducts from '../adminScreens/AdminProducts';
 import Colors from '../../../constants/Colors';
 import {ThemeContext} from '../../../context/LayoutContext';
 
 const Tab = createBottomTabNavigator();
 
-export default BottomTabNavigator = () => {
-  const favorit = useSelector(state => state.favorit);
-  const totalFavorits = favorit.length;
+export default AdminBottonNavigator = () => {
   const {themeColors} = useContext(ThemeContext);
   Icon.loadFont();
   Icon2.loadFont();
@@ -47,32 +45,36 @@ export default BottomTabNavigator = () => {
         },
       }}>
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Products"
+        component={AdminProducts}
         options={{
           headerShown: true,
-          tabBarLabel: 'Home',
+          tabBarLabel: 'Products',
           tabBarIcon: ({color}) => (
-            <Icon2 name="home" color={color} size={RFPercentage(3)} />
+            <Icon name="tshirt-crew" color={color} size={RFPercentage(3)} />
           ),
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={SearchScreen}
+        name="Orders"
+        component={AdminOrders}
         options={{
           headerShown: true,
-          tabBarLabel: 'Search',
+          tabBarLabel: 'Orders',
 
           tabBarIcon: ({color}) => (
-            <Icon2 name="search1" color={color} size={RFPercentage(3)} />
+            <Icon
+              name="truck-delivery-outline"
+              color={color}
+              size={RFPercentage(3)}
+            />
           ),
         }}
       />
 
       <Tab.Screen
         name="Notifications"
-        component={NotificationsScreen}
+        component={AdminNotifications}
         options={{
           headerShown: true,
           tabBarLabel: 'Notification',
@@ -84,17 +86,21 @@ export default BottomTabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Favorits"
-        component={FavoritScreen}
+        name="Messages"
+        component={AdminMessages}
         options={{
           headerShown: true,
-          tabBarLabel: 'Favorits',
+          tabBarLabel: 'Messages',
 
           tabBarIcon: ({color}) => (
-            <Icon name="heart-outline" color={color} size={RFPercentage(3)} />
+            <Icon
+              name="message-text-outline"
+              color={color}
+              size={RFPercentage(3)}
+            />
           ),
 
-          tabBarBadge: totalFavorits,
+          // tabBarBadge: totalFavorits,
         }}
       />
     </Tab.Navigator>

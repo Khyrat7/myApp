@@ -7,6 +7,9 @@ const productReducer = (state = initialState.product, action) => {
     case types.GET_PRODUCT_DATA_SUCCESS:
       return action.product;
 
+    case types.ADD_REVIEW_SUCCESS:
+      return action.product;
+
     default:
       return state;
   }

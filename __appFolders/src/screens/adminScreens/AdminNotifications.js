@@ -4,11 +4,10 @@ import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import firestore from '@react-native-firebase/firestore';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
-import {ThemeContext} from '../../context/LayoutContext';
-import Constants from '../../constants/PhoneDimentions';
-import CustomHeaderButton from '../components/HeaderButton';
+import {ThemeContext} from '../../../context/LayoutContext';
+import CustomHeaderButton from '../../components/HeaderButton';
 
-export default function NotificationsScreen(props) {
+export default function AdminNotifications(props) {
   // ____ Props & Hooks ____
 
   const {navigation, route} = props;
@@ -26,16 +25,16 @@ export default function NotificationsScreen(props) {
           />
         </HeaderButtons>
       ),
-      headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-          <Item
-            title="Cart"
-            iconSize={23}
-            iconName="cart-outline"
-            onPress={() => navigation.navigate('CartScreen')}
-          />
-        </HeaderButtons>
-      ),
+      // headerRight: () => (
+      //   <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+      //     <Item
+      //       title="Cart"
+      //       iconSize={23}
+      //       iconName="cart-outline"
+      //       onPress={() => navigation.navigate('CartScreen')}
+      //     />
+      //   </HeaderButtons>
+      // ),
     });
   });
 

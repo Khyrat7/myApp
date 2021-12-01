@@ -26,7 +26,7 @@ export default LayoutContext = ({children}) => {
     }
   };
 
-  getUserTheme();
+  userID ? getUserTheme() : null;
 
   const themeColors = {
     mainFont: theme === 'dark' ? Colors.white : Colors.black,

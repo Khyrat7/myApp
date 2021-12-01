@@ -8,4 +8,6 @@ export default Colors = {
   blue: '#113CFC',
   yellow: '#FBFF00',
   Darkgray: '#2B2B2B',
+  brown: '#AE431E',
+  lightGray: '#EEEEEE',
 };

@@ -22,7 +22,6 @@ export default function Settings(props) {
 
   const {navigation, route} = props;
   const {theme, themeColors, setTheme} = useContext(ThemeContext);
-  console.log(theme);
 
   const [language, setLanguage] = useState('Eng');
   const [lanSwitch, setLangSwitch] = useState(true);
@@ -189,6 +188,18 @@ export default function Settings(props) {
       <TouchableOpacity // Rate App.
         style={Styles.button}>
         <Text style={Styles.textContainer}>Rate App.</Text>
+        <Text style={Styles.arrow}>
+          <Icon name="chevron-forward-outline" size={RFPercentage(3)} />
+        </Text>
+      </TouchableOpacity>
+      <View style={Styles.separator}></View>
+
+      <TouchableOpacity // Logout
+        style={Styles.button}
+        onPress={() => {
+          auth().signOut();
+        }}>
+        <Text style={Styles.textContainer}>Logout</Text>
         <Text style={Styles.arrow}>
           <Icon name="chevron-forward-outline" size={RFPercentage(3)} />
         </Text>

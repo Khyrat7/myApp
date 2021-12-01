@@ -16,7 +16,12 @@ export default Card = props => {
       shadowColor: themeColors.border,
       shadowOpacity: 0.4,
       shadowRadius: 5,
+      shadowOffset: {
+        width: 2,
+        height: 5,
+      },
       marginHorizontal: 10,
+      // overflow: 'hidden',
     },
   });
   return (

@@ -1,3 +1,5 @@
+// change the address to read from  an array [addressess] as it is changed in firestore database
+
 import React, {useLayoutEffect, useState, useEffect, useContext} from 'react';
 import {
   View,

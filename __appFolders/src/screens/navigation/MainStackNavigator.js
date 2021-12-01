@@ -18,6 +18,13 @@ import NotificationsScreen from '../NotificationsScreen';
 import CartScreen from '../CartScreen';
 import SearchScreen from '../SearchScreen';
 import DrawerNavigator from './DrawerNavigator';
+import EditOrderScreen from '../EditOrderScreen';
+import OrderDetails from '../OrderDetails';
+import AdminAddProduct from '../adminScreens/AdminAddProduct';
+import AdminMessages from '../adminScreens/AdminMessages';
+import AdminNotifications from '../adminScreens/AdminNotifications';
+import AdminOrders from '../adminScreens/AdminOrders';
+import AdminProducts from '../adminScreens/AdminProducts';
 
 const Stack = createStackNavigator();
 
@@ -86,13 +93,13 @@ const MainStackNavigator = () => {
         <Stack.Screen
           name="Terms"
           component={Terms}
-          options={{title: 'Terms & Conditions'}}
+          options={{headerShown: false, title: 'Terms & Conditions'}}
         />
 
         <Stack.Screen
           name="PrivacyPolicy"
           component={PrivacyPolicy}
-          options={{title: 'Privacy Policy'}}
+          options={{headerShown: false, title: 'Privacy Policy'}}
         />
 
         <Stack.Screen
@@ -110,13 +117,55 @@ const MainStackNavigator = () => {
         <Stack.Screen
           name="CartScreen"
           component={CartScreen}
-          options={{title: 'My Cart'}}
+          options={{title: ' '}}
         />
 
         <Stack.Screen
           name="SearchScreen"
           component={SearchScreen}
           options={{title: ' '}}
+        />
+
+        <Stack.Screen
+          name="EditOrderScreen"
+          component={EditOrderScreen}
+          options={{title: 'Edit Product Order'}}
+        />
+
+        <Stack.Screen
+          name="OrderDetails"
+          component={OrderDetails}
+          options={{title: 'Order Details'}}
+        />
+
+        <Stack.Screen
+          name="AdminAddProduct"
+          component={AdminAddProduct}
+          options={{title: 'Add Product'}}
+        />
+
+        <Stack.Screen
+          name="AdminMessages"
+          component={AdminMessages}
+          options={{title: 'Messages'}}
+        />
+
+        <Stack.Screen
+          name="AdminNotifications"
+          component={AdminNotifications}
+          options={{title: 'Notifications'}}
+        />
+
+        <Stack.Screen
+          name="AdminOrders"
+          component={AdminOrders}
+          options={{title: 'Orders'}}
+        />
+
+        <Stack.Screen
+          name="AdminProducts"
+          component={AdminProducts}
+          options={{title: 'Products'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

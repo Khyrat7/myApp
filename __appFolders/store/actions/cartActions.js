@@ -2,7 +2,7 @@ import * as types from './actionTypes';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-const userID = auth().currentUser.uid;
+const userID = auth().currentUser ? auth().currentUser.uid : null;
 
 export const getCartProductsSuccess = products => {
   return {
@@ -15,6 +15,28 @@ export const toggleProductToCartSuccess = products => {
   return {
     type: types.TOGGLE_PRODUCT_TO_CART_SUCCESS,
     products,
+  };
+};
+
+export const getCartTotalsSuccess = (totalPrice, totalItmes) => {
+  return {
+    type: types.GET_CART_TOTALS_SUCCESS,
+    totalPrice,
+    totalItmes,
+  };
+};
+
+export const getCartProductSuccess = product => {
+  return {
+    type: types.GET_CART_PRODUCT_SUCCESS,
+    product,
+  };
+};
+
+export const updateCartProductSuccess = product => {
+  return {
+    type: types.UPDATE_CART_PRODUCT_SUCCESS,
+    product,
   };
 };
 
@@ -38,6 +60,7 @@ export const getCartProducts = () => {
       .collection('userObjects')
       .doc(userID)
       .collection('cartItems')
+      .orderBy('toCartDate', 'desc')
       .get()
       .then(res => {
         res.forEach(document => {
@@ -45,18 +68,14 @@ export const getCartProducts = () => {
         });
       });
 
-    dispatch({type: types.GET_CART_PRODUCTS_SUCCESS, products: products});
+    await dispatch({type: types.GET_CART_PRODUCTS_SUCCESS, products: products});
+    getCartTotals();
   };
 };
-//
-//
-//
-//
 //
 
 // Adding or Removing product to Cart
 export const toggleProductToCart = product => {
-  console.log('toggle products entered');
   return async dispatch => {
     // Getting all cart proucts
     let products = [];
@@ -87,11 +106,12 @@ export const toggleProductToCart = product => {
           .doc(product.key)
           .delete();
 
-        products = products.splice(existingIndex, 1);
+        products = products.filter(item => item.key !== product.key);
         dispatch({
           type: types.TOGGLE_PRODUCT_TO_CART_SUCCESS,
           products: products,
         });
+
         // Case product doesn't exist
       } else {
         await firestore()
@@ -101,6 +121,17 @@ export const toggleProductToCart = product => {
           .doc(product.key)
           .set({
             ...product,
+            toCartDate: new Date().toUTCString(),
+            toOrdersDate: '',
+            reviews: [],
+            orderDetails: {
+              deliveryStatus: 'ordered',
+              numberOfItems: 1,
+              color: 'Any',
+              note: '',
+              deliveryAddress: '',
+              size: '',
+            },
           });
         products = products.concat(product);
 
@@ -112,5 +143,102 @@ export const toggleProductToCart = product => {
     } catch (error) {
       console.log(error);
     }
+  };
+};
+//
+
+// Getting the Cart totals
+export const getCartTotals = () => {
+  return async dispatch => {
+    let totalItems = 0;
+    let totalPrice = 0;
+    await firestore()
+      .collection('userObjects')
+      .doc(userID)
+      .collection('cartItems')
+      .get()
+      .then(res => {
+        res.forEach(prod => {
+          let price = parseInt(prod.data().price);
+          let itemCount = prod.data().orderDetails.numberOfItems;
+          totalItems = totalItems + itemCount;
+          totalPrice = totalPrice + price * itemCount;
+        });
+      });
+
+    dispatch({
+      type: types.GET_CART_TOTALS_SUCCESS,
+      totalItmes: totalItems,
+      totalPrice: totalPrice,
+    });
+  };
+};
+
+// Getting the Cart product
+export const getCartProduct = productID => {
+  return async dispatch => {
+    let product = {};
+    await firestore()
+      .collection('userObjects')
+      .doc(userID)
+      .collection('cartItems')
+      .doc(productID)
+      .get()
+      .then(prod => {
+        product = prod.data();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    // console.log('cart product in action :', product);
+    dispatch({type: types.GET_CART_PRODUCT_SUCCESS, product: product});
+  };
+};
+
+// Update Cart Product order details
+export const updateCartProduct = (
+  productID,
+  numberOfItems,
+  size,
+  color,
+  note,
+  address,
+) => {
+  return async dispatch => {
+    let orderDetails = {
+      color: color,
+      deliveryAddress: address,
+      note: note,
+      numberOfItems: numberOfItems,
+      size: size,
+    };
+    let product = {};
+
+    await firestore()
+      .collection('userObjects')
+      .doc(userID)
+      .collection('cartItems')
+      .doc(productID)
+      .update({
+        orderDetails: orderDetails,
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    await firestore()
+      .collection('userObjects')
+      .doc(userID)
+      .collection('cartItems')
+      .doc(productID)
+      .get()
+      .then(prod => {
+        product = prod.data();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    dispatch({type: types.UPDATE_CART_PRODUCT_SUCCESS, product: product});
   };
 };
