@@ -125,7 +125,9 @@ export const toggleProductToCart = product => {
             toOrdersDate: '',
             reviews: [],
             orderDetails: {
-              deliveryStatus: 'ordered',
+              userID: userID,
+
+              deliveryStatus: 'active',
               numberOfItems: 1,
               color: 'Any',
               note: '',
@@ -206,6 +208,8 @@ export const updateCartProduct = (
 ) => {
   return async dispatch => {
     let orderDetails = {
+      userID: userID,
+      deliveryStatus: 'active',
       color: color,
       deliveryAddress: address,
       note: note,

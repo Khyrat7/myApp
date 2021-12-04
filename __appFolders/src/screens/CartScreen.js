@@ -28,9 +28,7 @@ import CustomHeaderButton from '../components/HeaderButton';
 import {ThemeContext} from '../../context/LayoutContext';
 import Constants from '../../constants/PhoneDimentions';
 import CartCard from '../components/CartCard';
-import {types} from '@babel/core';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export default function CartScreen(props) {
   const dispatch = useDispatch();

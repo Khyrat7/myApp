@@ -19,6 +19,8 @@ const Tab = createBottomTabNavigator();
 
 export default AdminBottonNavigator = () => {
   const {themeColors} = useContext(ThemeContext);
+  const activeOrders = useSelector(state => state.admin.activeOrders);
+
   Icon.loadFont();
   Icon2.loadFont();
 
@@ -69,6 +71,7 @@ export default AdminBottonNavigator = () => {
               size={RFPercentage(3)}
             />
           ),
+          tabBarBadge: activeOrders.length,
         }}
       />
 

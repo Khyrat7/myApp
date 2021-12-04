@@ -25,6 +25,7 @@ import AdminMessages from '../adminScreens/AdminMessages';
 import AdminNotifications from '../adminScreens/AdminNotifications';
 import AdminOrders from '../adminScreens/AdminOrders';
 import AdminProducts from '../adminScreens/AdminProducts';
+import AdminProductScreen from '../adminScreens/AdminProductScreen';
 
 const Stack = createStackNavigator();
 
@@ -166,6 +167,12 @@ const MainStackNavigator = () => {
           name="AdminProducts"
           component={AdminProducts}
           options={{title: 'Products'}}
+        />
+
+        <Stack.Screen
+          name="AdminProductScreen"
+          component={AdminProductScreen}
+          options={{title: 'Product Details'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

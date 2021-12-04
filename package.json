@@ -46,6 +46,7 @@
     "react-redux": "^7.2.6",
     "react-redux-firebase": "^3.10.0",
     "redux": "^4.1.2",
+    "redux-devtools-extension": "^2.13.9",
     "redux-firestore": "^0.15.0",
     "redux-immutable-state-invariant": "^2.1.0",
     "redux-thunk": "^2.4.0"

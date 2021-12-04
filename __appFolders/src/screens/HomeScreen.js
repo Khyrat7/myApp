@@ -22,6 +22,7 @@ import * as cartActions from '../../store/actions/cartActions';
 import * as favoritActions from '../../store/actions/favoritActions';
 import * as userActions from '../../store/actions/userActions';
 import * as ordersActions from '../../store/actions/ordersActions';
+import * as AdminActions from '../../store/actions/adminActions';
 
 import {ThemeContext} from '../../context/LayoutContext';
 import ProductCard from '../components/ProductCard';
@@ -81,6 +82,7 @@ export default HomeScreen = props => {
       dispatch(cartActions.getCartTotals());
       dispatch(favoritActions.getFavoritProducts());
       dispatch(ordersActions.getOrdersProducts(userID));
+      dispatch(AdminActions.getAdminProducts(userID));
     } catch (error) {
       console.log(error);
     }

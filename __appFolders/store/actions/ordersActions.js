@@ -87,6 +87,23 @@ export const setNewOrder = (orderArray, totalPrice, totalItems) => {
         orderDate: orderDate,
       });
 
+    for (let index = 0; index < products.length; index++) {
+      const product = products[index];
+      let newDoc = firestore()
+        .collection('sellerObjects')
+        .doc(product.sellerID)
+        .collection('orders')
+        .doc();
+      let docID = newDoc.id;
+
+      await firestore()
+        .collection('sellerObjects')
+        .doc(product.sellerID)
+        .collection('orders')
+        .doc(docID)
+        .set({...product, orderID: docID});
+    }
+
     dispatch({type: types.SET_NEW_ORDER_SUCCESS});
   };
 };

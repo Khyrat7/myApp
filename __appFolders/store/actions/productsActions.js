@@ -30,6 +30,7 @@ export const getHomeProducts = () => {
     const products = [];
     await firestore()
       .collection('products')
+      .orderBy('addedDate', 'desc')
       .get()
       .then(res => {
         res.forEach(document => {

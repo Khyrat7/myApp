@@ -19,4 +19,12 @@ export default {
   },
   favorit: [],
   user: {},
+  admin: {
+    allProducts: [],
+    filteredProducts: [],
+    product: {},
+    allOrders: [],
+    activeOrders: [],
+    doneOrders: [],
+  },
 };

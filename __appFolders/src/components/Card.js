@@ -14,10 +14,10 @@ export default Card = props => {
       backgroundColor: themeColors.background,
       marginBottom: 20,
       shadowColor: themeColors.border,
-      shadowOpacity: 0.4,
-      shadowRadius: 5,
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
       shadowOffset: {
-        width: 2,
+        width: 5,
         height: 5,
       },
       marginHorizontal: 10,

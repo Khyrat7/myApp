@@ -234,7 +234,7 @@ export default UserProfile = props => {
     setIsLoading(true);
     const uploadUri = image;
     let fileName = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
-    fileName = userID + '/' + fileName;
+    fileName = 'users/' + userID + '/profilePic/' + fileName;
     console.log('fiel name : ', fileName);
     try {
       await storage().ref(fileName).putFile(uploadUri);

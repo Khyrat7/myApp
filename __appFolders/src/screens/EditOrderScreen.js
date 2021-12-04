@@ -80,8 +80,8 @@ export default EditOrderScreen = props => {
   const colorsArray = product.colors;
   const photosArray = product.photos;
 
-  console.log('product in edit order : ', product);
-  console.log('product ID : ', productID);
+  // console.log('product in edit order : ', product);
+  // console.log('product ID : ', productID);
 
   // _________ size Dropdown hooks _________
   const [sizeDDopen, setSizeDDOpen] = useState(false);
@@ -268,6 +268,7 @@ export default EditOrderScreen = props => {
       borderRadius: 5,
       paddingVertical: 4,
       fontSize: RFPercentage(2),
+      color: themeColors.mainFont,
     },
   });
 
@@ -369,7 +370,7 @@ export default EditOrderScreen = props => {
 
             <View style={{alignSelf: 'center'}}>
               <NumberEdit
-                style={{backgroundColor: Colors.white}}
+                style={{backgroundColor: themeColors.background}}
                 number={numberOfItems}
                 SubOnPress={() => {
                   if (numberOfItems === 1) return;

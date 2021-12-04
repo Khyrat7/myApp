@@ -22,7 +22,7 @@ export default ProductFeed = props => {
     },
     image: {
       width: '100%',
-      height: Constants.screenHeight * 0.5,
+      height: '100%',
       marginHorizontal: 50,
     },
     textHeader: {
