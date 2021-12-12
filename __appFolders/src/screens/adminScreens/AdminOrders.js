@@ -48,7 +48,7 @@ export default function AdminOrders(props) {
   const [activeTab, setActiveTab] = useState('All');
   const [data, setData] = useState(orders);
 
-  console.log(data);
+  // console.log(data);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -309,7 +309,6 @@ export default function AdminOrders(props) {
             ItemSeparatorComponent={() => <View></View>}
             keyExtractor={(item, index) => item.orderID}
             renderItem={order => {
-              console.log(order);
               return (
                 <Swipeable
                   ref={ref => (row[order.index] = ref)}
@@ -317,7 +316,9 @@ export default function AdminOrders(props) {
                     RightActions(progress, order.item.orderID)
                   }
                   onSwipeableWillOpen={() => {
-                    if (prevOpenedRow && prevOpenedRow !== row[order.index]) {
+                    console.log('order index :', order.index);
+
+                    if (prevOpenedRow && prevOpenedRow !== order.item) {
                       prevOpenedRow.close();
                     }
                     prevOpenedRow = row[order.index];
